@@ -129,62 +129,54 @@
 <!-- ---------services---------------- -->
 <!-- Services Section HTML -->
 <!-- Services Section -->
-    <section id="services">
-        <div class="container">
-            <h1 class="sub-title">My Works</h1>
-            <div class="services-wrapper">
-                <!-- Left Arrow -->
-                <div class="scroll-arrow left-arrow">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                        <path d="M15 4L7 12L15 20" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-                    </svg>
-                </div>
-                <!-- Single services-list div -->
-                <div class="services-list">
-                    <!-- First Set of Cards -->
-                    <a href="https://www.youtube.com/your_obelisk_video_link" target="_blank" class="service-card">
-                        <img src="images/Oblisk (1).jpg" alt="OBLISK">
-                        <h2>OBLISK <i class="fab fa-youtube"></i></h2>
-                    </a>
-                
-                    <a href="https://www.youtube.com/your_motion_max_video_link" target="_blank" class="service-card">
-                        <img src="images/6_Tower.jpg" alt="MOTION MAX">
-                        <h2>MOTION MAX <i class="fab fa-youtube"></i></h2>
-                    </a>
-                
-                    <a href="https://www.youtube.com/your_helix_video_link" target="_blank" class="service-card">
-                        <img src="images/Helix_Hive.jpg" alt="HELIX">
-                        <h2>HELIX <i class="fab fa-youtube"></i></h2>
-                    </a>
-                
-                    <a href="https://www.youtube.com/your_telescope_video_link" target="_blank" class="service-card">
-                        <img src="images/telescope.jpg" alt="TELESCOPE">
-                        <h2>TELESCOPE <i class="fab fa-youtube"></i></h2>
-                    </a>
-                
-                    <a href="https://www.youtube.com/your_show_vortex_video_link" target="_blank" class="service-card">
-                        <img src="images/10_" alt="SHOW VORTEX">
-                        <h2>SHOW VORTEX <i class="fab fa-youtube"></i></h2>
-                    </a>
-                
-                    <a href="https://www.youtube.com/your_xxl_trigger_video_link" target="_blank" class="service-card">
-                        <img src="images/XXL_cube trigger.jpg" alt="XXL TRIGGER">
-                        <h2>XXL TRIGGER <i class="fab fa-youtube"></i></h2>
-                    </a>
-
-                    <!-- Duplicate Set (for infinite scroll) -->
-                    <!-- Add your duplicate cards here -->
+<!-- Replace your current services section in index.html with this code -->
+<section id="services">
+    <div class="container">
+        <h1 class="sub-title">My Works</h1>
+        <div class="services-wrapper">
+            <!-- Left Arrow -->
+            <div class="scroll-arrow left-arrow">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M15 4L7 12L15 20" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                </svg>
+            </div>
+            
+            <div class="services-list">
+                <!-- Service Cards -->
+                <div class="service-card" data-title="OBLISK" data-description="A dynamic middle section that rotates automatically. Motion sensors pause the rotation when people approach the structure." data-video-id="6A8sllOVaKE">
+                    <img src="images/Oblisk (1).jpg" alt="OBLISK">
+                    <h2>OBLISK <i class="fas fa-expand"></i></h2>
                 </div>
 
-                <!-- Right Arrow -->
-                <div class="scroll-arrow right-arrow">
-                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                        <path d="M9 4L17 12L9 20" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-                    </svg>
+                <div class="service-card" data-title="MOTION MAX" data-description="Tower with Linear and rotational motion" data-video-id="6u3XdiVBcxY">
+                    <img src="images/6_Tower.jpg" alt="MOTION MAX">
+                    <h2>MOTION MAX <i class="fas fa-expand"></i></h2>
                 </div>
+
+                <!-- Add more cards following the same pattern -->
+            </div>
+
+            <!-- Right Arrow -->
+            <div class="scroll-arrow right-arrow">
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M9 4L17 12L9 20" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                </svg>
             </div>
         </div>
-    </section>
+    </div>
+
+    <!-- Services Modal -->
+    <div id="servicesModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2 id="modalTitle"></h2>
+            <div class="video-container">
+                <iframe id="videoFrame" width="100%" height="315" src="" frameborder="0" allowfullscreen></iframe>
+            </div>
+            <p id="modalDescription"></p>
+        </div>
+    </div>
+</section>
 <!-- ----------portfolio------------ -->
 <!-- ----------portfolio------------ -->
 <!-- ----------portfolio------------ -->
