@@ -1,86 +1,56 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <!-- Character encoding (should be first) -->
     <meta charset="UTF-8">
-    
-    <!-- Essential meta tags -->
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    <!-- Favicon links -->
     <link rel="icon" type="image/png" href="favicon/apple-touch-icon.png" sizes="96x96" />
     <link rel="icon" type="image/svg+xml" href="favicon/favicon.svg" />
     <link rel="shortcut icon" href="favicon/favicon.ico" />
     <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png" />
     <link rel="manifest" href="favicon/site.webmanifest" />
-    
-    <!-- Primary Meta Tags -->
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#080808">
+    <meta name="description" content="Rijas Ali - Mechatronics & Robotics Engineer Portfolio">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Rijas Ali - Portfolio</title>
-    <meta name="title" content="Rijas Ali - Mechatronics & Robotics Engineer">
-    <meta name="description" content="Rijas Ali - Mechatronics & Robotics Engineer specializing in automation, robotics, and electronics projects. Portfolio showcasing innovative solutions and technical expertise.">
-    <meta name="keywords" content="Rijas Ali, Mechatronics Engineer, Robotics Engineer, Dubai, Electronics, Automation, Portfolio">
-    <meta name="author" content="Rijas Ali">
-    <meta name="robots" content="index, follow">
-    
-    <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="https://rijasali.com">
-    <meta property="og:title" content="Rijas Ali - Mechatronics & Robotics Engineer">
-    <meta property="og:description" content="Portfolio of innovative robotics and automation projects">
-    <meta property="og:image" content="https://rijasali.com/images/profile-image.jpg">
-    <meta property="og:locale" content="en_US">
-    
-    <!-- Twitter -->
-    <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:url" content="https://rijasali.com">
-    <meta name="twitter:title" content="Rijas Ali - Mechatronics & Robotics Engineer">
-    <meta name="twitter:description" content="Portfolio of innovative robotics and automation projects">
-    <meta name="twitter:image" content="https://rijasali.com/images/profile-image.jpg">
-    
-    <!-- Theme Color -->
-    <meta name="theme-color" content="#ff004f">
-    
-    <!-- Canonical URL -->
-    <link rel="canonical" href="https://rijasali.com">
-    
-    <!-- Stylesheets -->
     <link rel="stylesheet" href="style.css">
-    
-    <!-- Scripts -->
     <script src="https://kit.fontawesome.com/c4254e24a8.js" crossorigin="anonymous"></script>
 </head>
+
 <body>
     <!-- Header Section -->
     <header id="header">
         <div class="container">
-          <nav>
-            <a href="#" class="logo"><span>R</span>ijas.</a>
-            <div class="nav-toggle" onclick="toggleMenu()">
-              <i class="fas fa-bars"></i>
+            <nav>
+                <a href="#" class="logo"><span>R</span>ijas.</a>
+                <div class="nav-toggle" onclick="toggleMenu()">
+                    <i class="fas fa-bars"></i>
+                </div>
+                <ul class="nav-menu">
+                    <li><a href="#header">Home</a></li>
+                    <li><a href="#about">About</a></li>
+                    <li><a href="#services">My works</a></li>
+                    <li><a href="#portfolio">Portfolio</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                    <i class="fas fa-times close-menu" onclick="toggleMenu()"></i>
+                </ul>
+            </nav>
+
+            <div class="header-content">
+                <div class="header-text">
+                    <p>Mechatronics Engineer</p>
+                    <h1>Hi, I'm <span>Rijas</span><br>Engineering Dreams</h1>
+                </div>
+                <div class="header-image">
+                    <img src="images/hi_robot2.gif" alt="Rijas" class="profile-image">
+                </div>
             </div>
-            <ul class="nav-menu">
-              <li><a href="#header">Home</a></li>
-              <li><a href="#about">About</a></li>
-              <li><a href="#services">My works</a></li>
-              <li><a href="#portfolio">Portfolio</a></li>
-              <li><a href="#contact">Contact</a></li>
-              <i class="fas fa-times close-menu" onclick="toggleMenu()"></i>
-            </ul>
-          </nav>
-          
-          <div class="header-content">
-            <div class="header-text">
-              <p>Mechatronics Engineer</p>
-              <h1>Hi, I'm <span>Rijas</span><br>Engineering Dreams</h1>
-            </div>
-            <div class="header-image">
-              <img src="images/hi_robot2.gif" alt="Rijas" class="profile-image">
-            </div>
-          </div>
         </div>
-      </header>
-<!-- -----------about---------- -->
+    </header>
+    <!-- -----------about---------- -->
     <section id="about">
         <div class="container">
             <div class="row">
@@ -89,7 +59,10 @@
                 </div>
                 <div class="about-col-2">
                     <h1 class="sub-title">About Me</h1>
-                    <p>A passionate Mechatronics and Robotics Engineer with a proven track record in bringing innovative solutions to life. I combine technical expertise with creative problem-solving. My blend of skills in robotics, Python programming, and embedded systems allows me to transform complex engineering challenges into elegant, functional solutions.</p>
+                    <p>A passionate Mechatronics and Robotics Engineer with a proven track record in bringing innovative
+                        solutions to life. I combine technical expertise with creative problem-solving. My blend of
+                        skills in robotics, Python programming, and embedded systems allows me to transform complex
+                        engineering challenges into elegant, functional solutions.</p>
 
                     <div class="tab-titles">
                         <p class="tab-links active-link" onclick="opentab('skills')">Skills</p>
@@ -99,7 +72,8 @@
 
                     <div class="tab-contents active-tab" id="skills">
                         <ul>
-                            <li><span>Electronics & Robotics</span><br>Robotics, Raspberry pi, Microcontroller programming, ROS, Electronics, Embedded Systems</li>
+                            <li><span>Electronics & Robotics</span><br>Robotics, Raspberry pi, Microcontroller
+                                programming, ROS, Electronics, Embedded Systems</li>
                             <li><span>Programming</span><br>Python, C, C++, Arduino IDE</li>
                             <li><span>Design</span><br>PCB Prototyping, Altium Designer, CAD, Fusion 360</li>
                         </ul>
@@ -107,7 +81,8 @@
 
                     <div class="tab-contents" id="experience">
                         <ul>
-                            <li><span>Nov 2023 - Current</span><br>Senior Mechatronics Engineer at BriteMinds, Dubai</li>
+                            <li><span>Nov 2023 - Current</span><br>Senior Mechatronics Engineer at BriteMinds, Dubai
+                            </li>
                             <li><span>Dec 2022 - Current</span><br>Mechatronics Engineer at BriteMinds, Dubai</li>
                             <li><span>July 2022 - Nov 2022</span><br>Senior Robotics Trainer at Codde Robo Robotics</li>
                             <li><span>May 2022 - June 2022</span><br>Robotics Trainer at Codde Robo Robotics</li>
@@ -116,7 +91,8 @@
 
                     <div class="tab-contents" id="education">
                         <ul>
-                            <li><span>2018 - 2022</span><br>B.Tech in Mechatronics Engineering<br>APJ Abdul Kalam Technological University | CGPA - 7.92/10</li>
+                            <li><span>2018 - 2022</span><br>B.Tech in Mechatronics Engineering<br>APJ Abdul Kalam
+                                Technological University | CGPA - 7.92/10</li>
                             <li><span>June 2021</span><br>Python Training Bootcamp - Udemy</li>
                             <li><span>Oct 2022</span><br>ROS (Robotic Operating System) Certification - Udemy</li>
                             <li><span>Sep 2022</span><br>Embedded System Design & IOT Internship</li>
@@ -126,11 +102,11 @@
             </div>
         </div>
     </section>
-<!-- ---------services---------------- -->
-<!-- Services Section HTML -->
-<!-- Services Section -->
-<!-- Replace your current services section in index.html with this code -->
-<!-- Replace your current services section in index.html with this code -->
+    <!-- ---------services---------------- -->
+    <!-- Services Section HTML -->
+    <!-- Services Section -->
+    <!-- Replace your current services section in index.html with this code -->
+
 <!-- Replace your current services section in index.html with this code -->
     <section id="services">
         <div class="container">
@@ -153,20 +129,20 @@
                         <img src="images/Oblisk (1).jpg" alt="OBLISK">
                         <h2>OBLISK <i class="fas fa-play-circle"></i></h2>
                     </div>
-    
+
                     <!-- Example card with image gallery -->
                     <div class="service-card"
                         data-type="gallery"
                         data-title="Project with Gallery"
                         data-description="This project showcases multiple images in a gallery view."
-                        data-images="images/project1.jpg,images/project2.jpg,images/project3.jpg">
-                        <img src="images/project1.jpg" alt="Project Name">
+                        data-images="images/10_Tower.jpg,images/Aurora.jpg,images/Bricks.jpg">
+                        <img src="images/Helix_Hive.jpg" alt="Project Name">
                         <h2>Project Name <i class="fas fa-images"></i></h2>
                     </div>
-    
+
                     <!-- Add more cards following either pattern -->
                 </div>
-    
+
                 <!-- Right Arrow -->
                 <div class="scroll-arrow right-arrow">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -175,7 +151,7 @@
                 </div>
             </div>
         </div>
-    
+
         <!-- Services Modal -->
         <div id="servicesModal" class="modal">
             <div class="modal-content">
@@ -186,7 +162,7 @@
                 <div class="video-container">
                     <iframe id="videoFrame" width="100%" height="315" src="" frameborder="0" allowfullscreen></iframe>
                 </div>
-    
+
                 <!-- Gallery Container -->
                 <div class="gallery-container">
                     <button class="gallery-nav prev-img">&lt;</button>
@@ -195,18 +171,18 @@
                     </div>
                     <button class="gallery-nav next-img">&gt;</button>
                 </div>
-    
+
                 <p id="modalDescription"></p>
             </div>
         </div>
     </section>
-<!-- ----------portfolio------------ -->
-<!-- ----------portfolio------------ -->
-<!-- ----------portfolio------------ -->
+    <!-- ----------portfolio------------ -->
+    <!-- ----------portfolio------------ -->
+    <!-- ----------portfolio------------ -->
     <section id="portfolio">
         <div class="container">
             <h1 class="sub-title">Portfolio</h1>
-            
+
             <!-- Portfolio Categories -->
             <div class="portfolio-categories">
                 <button class="category-btn active" data-category="robotics">Kinetic Screens</button>
@@ -225,12 +201,10 @@
                             <span>Kinetic</span>
                             <span>Control System</span>
                         </div>
-                        <button class="view-project" 
-                            data-youtube="https://www.youtube.com/watch?v=pPQmDAecSXE"
+                        <button class="view-project" data-youtube="https://www.youtube.com/watch?v=pPQmDAecSXE"
                             data-title="Kinetic Bricks"
                             data-description="Individual controlled 59 Blocks with Screens. This innovative project features kinetic motion control and advanced display systems."
-                            data-has-github="false"
-                            data-has-youtube="true">
+                            data-has-github="false" data-has-youtube="true">
                             View Project
                         </button>
                     </div>
@@ -246,12 +220,9 @@
                             <span>Hardware</span>
                             <span>Control System</span>
                         </div>
-                        <button class="view-project" 
-                            data-youtube="https://youtu.be/6u3XdiVBcxY"
-                            data-title="6 Towers"
+                        <button class="view-project" data-youtube="https://youtu.be/6u3XdiVBcxY" data-title="6 Towers"
                             data-description="Project by BriteMinds - Transforming motion control and display technology"
-                            data-has-github="false"
-                            data-has-youtube="true">
+                            data-has-github="false" data-has-youtube="true">
                             View Project
                         </button>
                     </div>
@@ -261,17 +232,16 @@
                     <img src="images/Oblisk (1).jpg" alt="Oblisk">
                     <div class="layer">
                         <h3>Oblisk</h3>
-                        <p>A dynamic middle section that rotates automatically. Motion sensors pause the rotation when people approach the structure.</p>
+                        <p>A dynamic middle section that rotates automatically. Motion sensors pause the rotation when
+                            people approach the structure.</p>
                         <div class="tech-tags">
                             <span>Kinetic screens</span>
                             <span>Hardware</span>
                         </div>
-                        <button class="view-project" 
-                            data-youtube="https://youtu.be/6A8sllOVaKE?si=mjXysVXpqKTahIT_"
+                        <button class="view-project" data-youtube="https://youtu.be/6A8sllOVaKE?si=mjXysVXpqKTahIT_"
                             data-title="Oblisk"
                             data-description="Project by BriteMinds - Transforming motion control and display technology"
-                            data-has-github="false"
-                            data-has-youtube="true">
+                            data-has-github="false" data-has-youtube="true">
                             View Project
                         </button>
                     </div>
@@ -287,12 +257,9 @@
                             <span>Hardware</span>
                             <span>Control System</span>
                         </div>
-                        <button class="view-project" 
-                            data-youtube="https://youtu.be/ZZWJ7yVApqg"
-                            data-title="Helix"
+                        <button class="view-project" data-youtube="https://youtu.be/ZZWJ7yVApqg" data-title="Helix"
                             data-description="Project by BriteMinds - Transforming motion control and display technology"
-                            data-has-github="false"
-                            data-has-youtube="true">
+                            data-has-github="false" data-has-youtube="true">
                             View Project
                         </button>
                     </div>
@@ -302,18 +269,16 @@
                     <img src="images/XXL_cube trigger.jpg" alt="XXL Cube">
                     <div class="layer">
                         <h3>XXL Cube</h3>
-                        <p>A 3-meter cube structure rotates automatically when triggered by sensors mounted on its smaller cube component</p>
+                        <p>A 3-meter cube structure rotates automatically when triggered by sensors mounted on its
+                            smaller cube component</p>
                         <div class="tech-tags">
                             <span>Kinetic screens</span>
                             <span>Hardware</span>
                             <span>Control System</span>
                         </div>
-                        <button class="view-project" 
-                            data-youtube="https://youtu.be/4ib4SPnAUHo"
-                            data-title="XXL Cube"
+                        <button class="view-project" data-youtube="https://youtu.be/4ib4SPnAUHo" data-title="XXL Cube"
                             data-description="Project by BriteMinds - Transforming motion control and display technology"
-                            data-has-github="false"
-                            data-has-youtube="true">
+                            data-has-github="false" data-has-youtube="true">
                             View Project
                         </button>
                     </div>
@@ -323,18 +288,17 @@
                     <img src="images/Suspended kinetic Tower.jpg" alt="Hanging Tower">
                     <div class="layer">
                         <h3>Hanging Tower</h3>
-                        <p>DU's project features 37 independently controlled hanging towers, each suspended from above to create a dynamic suspended display.</p>
+                        <p>DU's project features 37 independently controlled hanging towers, each suspended from above
+                            to create a dynamic suspended display.</p>
                         <div class="tech-tags">
                             <span>Kinetic screens</span>
                             <span>Hardware</span>
                             <span>Control System</span>
                         </div>
-                        <button class="view-project" 
-                            data-youtube="https://youtu.be/wI7sOToJsNU?si=FDLA3O5JoMR0vfRr"
+                        <button class="view-project" data-youtube="https://youtu.be/wI7sOToJsNU?si=FDLA3O5JoMR0vfRr"
                             data-title="Hanging Tower"
                             data-description="Project by BriteMinds - Transforming motion control and display technology"
-                            data-has-github="false"
-                            data-has-youtube="true">
+                            data-has-github="false" data-has-youtube="true">
                             View Project
                         </button>
                     </div>
@@ -344,13 +308,12 @@
                     <img src="images/Aurora.jpg" alt="Aurora">
                     <div class="layer">
                         <h3>Aurora</h3>
-                        <p>A mushroom-shaped installation crafted from RGB LED matrix strips, featuring a cylindrical stem and wide circular top.
-                        Each LED can be individually controlled to create dynamic patterns and animations across the entire structure</p>
-                        <button class="view-project" 
-                            data-youtube="https://youtu.be/l4zxmVpCEmc"
-                            data-title="Aurora"
-                            data-description="Project by BriteMinds - LED Matrix Installation"
-                            data-has-github="false"
+                        <p>A mushroom-shaped installation crafted from RGB LED matrix strips, featuring a cylindrical
+                            stem and wide circular top.
+                            Each LED can be individually controlled to create dynamic patterns and animations across the
+                            entire structure</p>
+                        <button class="view-project" data-youtube="https://youtu.be/l4zxmVpCEmc" data-title="Aurora"
+                            data-description="Project by BriteMinds - LED Matrix Installation" data-has-github="false"
                             data-has-youtube="true">
                             View Project
                         </button>
@@ -367,11 +330,9 @@
                             <span>Screen</span>
                             <span>Control System</span>
                         </div>
-                        <button class="view-project" 
-                            data-youtube="https://youtu.be/gtyLpdSWR5I?si=Cf9-fnQ4JGHNRCwb"
+                        <button class="view-project" data-youtube="https://youtu.be/gtyLpdSWR5I?si=Cf9-fnQ4JGHNRCwb"
                             data-title="Interactive Globe"
-                            data-description="Project by BriteMinds - Interactive LED Globe"
-                            data-has-github="false"
+                            data-description="Project by BriteMinds - Interactive LED Globe" data-has-github="false"
                             data-has-youtube="true">
                             View Project
                         </button>
@@ -382,18 +343,17 @@
                     <img src="images/XXL_cube .jpg">
                     <div class="layer">
                         <h3>Kinetic Sphere</h3>
-                        <p>A 3-meter cube structure rotates automatically when triggered by sensors mounted on its smaller cube component</p>
+                        <p>A 3-meter cube structure rotates automatically when triggered by sensors mounted on its
+                            smaller cube component</p>
                         <div class="tech-tags">
                             <span>Kinetic screens</span>
                             <span>Hardware</span>
                             <span>Control System</span>
                         </div>
-                        <button class="view-project" 
-                            data-youtube="https://youtu.be/4ib4SPnAUHo"
+                        <button class="view-project" data-youtube="https://youtu.be/4ib4SPnAUHo"
                             data-title="Kinetic Sphere"
                             data-description="Project by BriteMinds - Transforming motion control and display technology"
-                            data-has-github="false"
-                            data-has-youtube="true">
+                            data-has-github="false" data-has-youtube="true">
                             View Project
                         </button>
                     </div>
@@ -410,11 +370,10 @@
                             <span>Sensor</span>
                             <span>LED</span>
                         </div>
-                        <button class="view-project" 
+                        <button class="view-project"
                             data-github="https://github.com/rijasali/PCB-Design-/tree/main/Tiny"
                             data-title="Tiny Controller"
-                            data-description="PCB Design Project - Compact Microcontroller Board"
-                            data-has-github="true"
+                            data-description="PCB Design Project - Compact Microcontroller Board" data-has-github="true"
                             data-has-youtube="false">
                             View Project
                         </button>
@@ -431,18 +390,15 @@
                             <span>Sensor</span>
                             <span>Led</span>
                         </div>
-                        <button class="view-project" 
-                            data-youtube="https://youtu.be/4ib4SPnAUHo"
+                        <button class="view-project" data-youtube="https://youtu.be/4ib4SPnAUHo"
                             data-github="https://github.com/rijasali/PCB-Design-/tree/main/Led%20sequencer"
-                            data-title="Led Sequencer"
-                            data-description="PCB Design Project"
-                            data-has-github="true"
+                            data-title="Led Sequencer" data-description="PCB Design Project" data-has-github="true"
                             data-has-youtube="false">
                             View Project
                         </button>
                     </div>
                 </div>
-    
+
 
                 <!--Voltage Regulator project-->
                 <div class="work" data-category="electronics">
@@ -455,18 +411,15 @@
                             <span>Sensor</span>
                             <span>Led</span>
                         </div>
-                        <button class="view-project" 
-                            data-youtube="https://youtu.be/4ib4SPnAUHo"
+                        <button class="view-project" data-youtube="https://youtu.be/4ib4SPnAUHo"
                             data-github="https://github.com/rijasali/PCB-Design-/tree/main/Voltage%20Regulator"
-                            data-title="Voltage Regulator"
-                            data-description="PCB Design Project"
-                            data-has-github="true"
+                            data-title="Voltage Regulator" data-description="PCB Design Project" data-has-github="true"
                             data-has-youtube="false">
                             View Project
                         </button>
                     </div>
                 </div>
-                        <!--Power Hub project-->
+                <!--Power Hub project-->
                 <div class="work" data-category="electronics">
                     <img src="images/Power pcb 3d 1.png">
                     <div class="layer">
@@ -477,18 +430,15 @@
                             <span>Sensor</span>
                             <span>Led</span>
                         </div>
-                        <button class="view-project" 
-                            data-youtube="https://youtu.be/4ib4SPnAUHo"
+                        <button class="view-project" data-youtube="https://youtu.be/4ib4SPnAUHo"
                             data-github="https://github.com/rijasali/PCB-Design-/tree/main/Bricks%20Power%20hub"
-                            data-title="Power Hub"
-                            data-description="PCB Design Project"
-                            data-has-github="true"
+                            data-title="Power Hub" data-description="PCB Design Project" data-has-github="true"
                             data-has-youtube="false">
                             View Project
                         </button>
                     </div>
                 </div>
-    
+
                 <!--Signal Hub project-->
                 <div class="work" data-category="electronics">
                     <img src="images/Signal pcb 3d image.png">
@@ -500,12 +450,9 @@
                             <span>Sensor</span>
                             <span>Led</span>
                         </div>
-                        <button class="view-project" 
-                            data-youtube="https://youtu.be/4ib4SPnAUHo"
+                        <button class="view-project" data-youtube="https://youtu.be/4ib4SPnAUHo"
                             data-github="https://github.com/rijasali/PCB-Design-/tree/main/Bricks%20Signal%20pcb "
-                            data-title="CAT6 Signal Hub"
-                            data-description="PCB Design Project"
-                            data-has-github="true"
+                            data-title="CAT6 Signal Hub" data-description="PCB Design Project" data-has-github="true"
                             data-has-youtube="false">
                             View Project
                         </button>
@@ -520,46 +467,42 @@
                     <img src="images/Movex.jpg" alt="Movex">
                     <div class="layer">
                         <h3>Movex</h3>
-                        <p>This innovative device consists of a wheelchair that can seamlessly transform into a complete bed. Control options include a joystick, remote control, and other user-friendly interfaces.</p>
+                        <p>This innovative device consists of a wheelchair that can seamlessly transform into a complete
+                            bed. Control options include a joystick, remote control, and other user-friendly interfaces.
+                        </p>
                         <div class="tech-tags">
                             <span>Microcontroller</span>
                             <span>Sensor</span>
                             <span>Robotics</span>
                         </div>
-                        <button class="view-project" 
-                            data-youtube="https://youtu.be/mI9AIbfQVmk"
-                            data-github="https://sites.google.com/view/rijas-ali/movex?authuser=0"
-                            data-title="Movex"
-                            data-description="Academic Projects - Transformable Wheelchair"
-                            data-has-github="true"
+                        <button class="view-project" data-youtube="https://youtu.be/mI9AIbfQVmk"
+                            data-github="https://sites.google.com/view/rijas-ali/movex?authuser=0" data-title="Movex"
+                            data-description="Academic Projects - Transformable Wheelchair" data-has-github="true"
                             data-has-youtube="true">
                             View Project
                         </button>
                     </div>
                 </div>
-                        <!--Tori project-->
+                <!--Tori project-->
                 <div class="work" data-category="automation">
                     <img src="images/Tori.jpg">
                     <div class="layer">
                         <h3>Tori</h3>
-                        <p>Tori is an inauguration program assistance robot. Tori has an emotional face and can talk, walk, and carry stuff. A mobile device controls it/</p>
+                        <p>Tori is an inauguration program assistance robot. Tori has an emotional face and can talk,
+                            walk, and carry stuff. A mobile device controls it/</p>
                         <div class="tech-tags">
                             <span>microcontroller</span>
                             <span>Sensor</span>
                             <span>Led</span>
                         </div>
-                        <button class="view-project" 
-                            data-youtube="https://youtu.be/mI9AIbfQVmk"
-                            data-github="https://sites.google.com/view/rijas-ali/tori?authuser=0"
-                            data-title="Tori"
-                            data-description="Academic Projects"
-                            data-has-github="true"
-                            data-has-youtube="false">
+                        <button class="view-project" data-youtube="https://youtu.be/mI9AIbfQVmk"
+                            data-github="https://sites.google.com/view/rijas-ali/tori?authuser=0" data-title="Tori"
+                            data-description="Academic Projects" data-has-github="true" data-has-youtube="false">
                             View Project
                         </button>
                     </div>
                 </div>
-        <!--Animal Intrusion Detection and repellent system project-->
+                <!--Animal Intrusion Detection and repellent system project-->
                 <div class="work" data-category="automation">
                     <img src="images/Intrusions alarm.png">
                     <div class="layer">
@@ -570,34 +513,29 @@
                             <span>Sensor</span>
                             <span>Led</span>
                         </div>
-                        <button class="view-project" 
-                            data-youtube="https://youtu.be/mI9AIbfQVmk"
+                        <button class="view-project" data-youtube="https://youtu.be/mI9AIbfQVmk"
                             data-github="https://sites.google.com/view/rijas-ali/intrusion-alarm?authuser=0"
                             data-title="Animal Intrusion Detection and repellent system"
-                            data-description="Academic Projects"
-                            data-has-github="true"
-                            data-has-youtube="false">
+                            data-description="Academic Projects" data-has-github="true" data-has-youtube="false">
                             View Project
                         </button>
                     </div>
                 </div>
-        <!--Pick and place-->
+                <!--Pick and place-->
                 <div class="work" data-category="automation">
                     <img src="images/Pick and place robot.png">
                     <div class="layer">
                         <h3>Pick & Place Robot</h3>
-                        <p>Used to pick the object and place to somewhere. It has three degrees of freedom and can carry up to 200 grams. It is controlled by Bluetooth Device.</p>
+                        <p>Used to pick the object and place to somewhere. It has three degrees of freedom and can carry
+                            up to 200 grams. It is controlled by Bluetooth Device.</p>
                         <div class="tech-tags">
                             <span>microcontroller</span>
                             <span>Sensor</span>
                             <span>Led</span>
                         </div>
-                        <button class="view-project" 
-                            data-youtube="https://youtu.be/mI9AIbfQVmk"
+                        <button class="view-project" data-youtube="https://youtu.be/mI9AIbfQVmk"
                             data-github="https://sites.google.com/view/rijas-ali/pick-and-place-robot?authuser=0"
-                            data-title="Pick & Place Robot"
-                            data-description="Academic Projects"
-                            data-has-github="true"
+                            data-title="Pick & Place Robot" data-description="Academic Projects" data-has-github="true"
                             data-has-youtube="false">
                             View Project
                         </button>
@@ -622,10 +560,12 @@
                     <h2 id="modalTitle"></h2>
                     <p id="modalDescription"></p>
                     <div class="modal-buttons">
-                        <a id="githubLink" href="" target="_blank" rel="noopener noreferrer" class="modal-btn github-btn">
+                        <a id="githubLink" href="" target="_blank" rel="noopener noreferrer"
+                            class="modal-btn github-btn">
                             <i class="fab fa-github"></i> View on GitHub
                         </a>
-                        <a id="youtubeLink" href="" target="_blank" rel="noopener noreferrer" class="modal-btn youtube-btn">
+                        <a id="youtubeLink" href="" target="_blank" rel="noopener noreferrer"
+                            class="modal-btn youtube-btn">
                             <i class="fab fa-youtube"></i> Watch Video
                         </a>
                     </div>
@@ -633,7 +573,7 @@
             </div>
         </div>
     </section>
-<!-- ----------contact------------- -->
+    <!-- ----------contact------------- -->
     <section id="contact">
         <div class="container">
             <div class="row">
@@ -646,7 +586,7 @@
                             <span class="copy-tooltip">Click to copy</span>
                             <span class="copy-feedback">Copied!</span>
                         </div>
-                        
+
                         <div class="contact-item" onclick="copyToClipboard('+971569582613')">
                             <i class="fas fa-phone-square-alt"></i>
                             <span class="contact-text">+971 569582613</span>
@@ -661,7 +601,8 @@
                         <a href=""><i class="fab fa-linkedin"></i></a>
                     </div>
                     <a href="images/my-cv.pdf" download class="btn btn2">Download CV</a>
-                    <a href="https://in.linkedin.com/in/rijas-ali-a681a5189" target="_blank" class="btn btn2 linkedin-btn"><i class="fab fa-linkedin"></i> LinkedIn</a>
+                    <a href="https://in.linkedin.com/in/rijas-ali-a681a5189" target="_blank"
+                        class="btn btn2 linkedin-btn"><i class="fab fa-linkedin"></i> LinkedIn</a>
                 </div>
                 <div class="contact-right">
                     <form name="submit-to-google-sheet">
@@ -678,4 +619,5 @@
     </section>
     <script src="js/script.js"></script>
 </body>
+
 </html>
