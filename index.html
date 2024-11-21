@@ -131,74 +131,75 @@
 <!-- Services Section -->
 <!-- Replace your current services section in index.html with this code -->
 <!-- Replace your current services section in index.html with this code -->
-<section id="services">
-    <div class="container">
-        <h1 class="sub-title">My Works</h1>
-        <div class="services-wrapper">
-            <!-- Left Arrow -->
-            <div class="scroll-arrow left-arrow">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                    <path d="M15 4L7 12L15 20" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-                </svg>
-            </div>
-            
-            <div class="services-list">
-                <!-- Example card with video -->
-                <div class="service-card" 
-                    data-type="video"
-                    data-title="OBLISK" 
-                    data-description="A dynamic middle section that rotates automatically. Motion sensors pause the rotation when people approach the structure." 
-                    data-video-id="6A8sllOVaKE">
-                    <img src="images/Oblisk (1).jpg" alt="OBLISK">
-                    <h2>OBLISK <i class="fas fa-play-circle"></i></h2>
+<!-- Replace your current services section in index.html with this code -->
+    <section id="services">
+        <div class="container">
+            <h1 class="sub-title">My Works</h1>
+            <div class="services-wrapper">
+                <!-- Left Arrow -->
+                <div class="scroll-arrow left-arrow">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M15 4L7 12L15 20" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                    </svg>
                 </div>
-
-                <!-- Example card with image gallery -->
-                <div class="service-card"
-                    data-type="gallery"
-                    data-title="Project with Gallery"
-                    data-description="This project showcases multiple images in a gallery view."
-                    data-images="images/project1.jpg,images/project2.jpg,images/project3.jpg">
-                    <img src="images/project1.jpg" alt="Project Name">
-                    <h2>Project Name <i class="fas fa-images"></i></h2>
+                
+                <div class="services-list">
+                    <!-- Example card with video -->
+                    <div class="service-card" 
+                        data-type="video"
+                        data-title="OBLISK" 
+                        data-description="A dynamic middle section that rotates automatically. Motion sensors pause the rotation when people approach the structure." 
+                        data-video-id="6A8sllOVaKE">
+                        <img src="images/Oblisk (1).jpg" alt="OBLISK">
+                        <h2>OBLISK <i class="fas fa-play-circle"></i></h2>
+                    </div>
+    
+                    <!-- Example card with image gallery -->
+                    <div class="service-card"
+                        data-type="gallery"
+                        data-title="Project with Gallery"
+                        data-description="This project showcases multiple images in a gallery view."
+                        data-images="images/project1.jpg,images/project2.jpg,images/project3.jpg">
+                        <img src="images/project1.jpg" alt="Project Name">
+                        <h2>Project Name <i class="fas fa-images"></i></h2>
+                    </div>
+    
+                    <!-- Add more cards following either pattern -->
                 </div>
-
-                <!-- Add more cards following either pattern -->
-            </div>
-
-            <!-- Right Arrow -->
-            <div class="scroll-arrow right-arrow">
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
-                    <path d="M9 4L17 12L9 20" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-                </svg>
+    
+                <!-- Right Arrow -->
+                <div class="scroll-arrow right-arrow">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                        <path d="M9 4L17 12L9 20" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+                    </svg>
+                </div>
             </div>
         </div>
-    </div>
-
-    <!-- Services Modal -->
-    <div id="servicesModal" class="modal">
-        <div class="modal-content">
-            <span class="close-modal">&times;</span>
-            <h2 id="modalTitle"></h2>
-            
-            <!-- Video Container -->
-            <div class="video-container">
-                <iframe id="videoFrame" width="100%" height="315" src="" frameborder="0" allowfullscreen></iframe>
-            </div>
-
-            <!-- Gallery Container -->
-            <div class="gallery-container">
-                <button class="gallery-nav prev-img">&lt;</button>
-                <div class="gallery-image-wrapper">
-                    <img id="galleryImage" src="" alt="Gallery Image">
+    
+        <!-- Services Modal -->
+        <div id="servicesModal" class="modal">
+            <div class="modal-content">
+                <span class="close-modal">&times;</span>
+                <h2 id="modalTitle"></h2>
+                
+                <!-- Video Container -->
+                <div class="video-container">
+                    <iframe id="videoFrame" width="100%" height="315" src="" frameborder="0" allowfullscreen></iframe>
                 </div>
-                <button class="gallery-nav next-img">&gt;</button>
+    
+                <!-- Gallery Container -->
+                <div class="gallery-container">
+                    <button class="gallery-nav prev-img">&lt;</button>
+                    <div class="gallery-image-wrapper">
+                        <img id="galleryImage" src="" alt="Gallery Image">
+                    </div>
+                    <button class="gallery-nav next-img">&gt;</button>
+                </div>
+    
+                <p id="modalDescription"></p>
             </div>
-
-            <p id="modalDescription"></p>
         </div>
-    </div>
-</section>
+    </section>
 <!-- ----------portfolio------------ -->
 <!-- ----------portfolio------------ -->
 <!-- ----------portfolio------------ -->
