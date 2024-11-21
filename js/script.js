@@ -107,110 +107,174 @@ document.addEventListener('DOMContentLoaded', function() {
     const leftArrow = document.querySelector('.left-arrow');
     const rightArrow = document.querySelector('.right-arrow');
     const servicesWrapper = document.querySelector('.services-wrapper');
-    let currentPosition = 0;
     let isManualScrolling = false;
+    let autoScrollingEnabled = true;
 
-    // Function to stop automatic scrolling
-    const pauseAutoScroll = () => {
-        servicesList.style.animationPlayState = 'paused';
-    };
-
-    // Function to resume automatic scrolling
-    const resumeAutoScroll = () => {
-        if (!isManualScrolling) {
-            servicesList.style.animationPlayState = 'running';
+    // Clone items for smooth infinite scroll
+    function setupInfiniteScroll() {
+        if (!servicesList) return;
+        const originalCards = Array.from(servicesList.children);
+        // Only clone if we haven't already cloned
+        if (originalCards.length === servicesList.querySelectorAll('.service-card').length) {
+            originalCards.forEach(card => {
+                const clone = card.cloneNode(true);
+                servicesList.appendChild(clone);
+            });
         }
-    };
+    }
 
-    // Function to handle manual scrolling
-    const handleManualScroll = (direction) => {
+    function startAutoScroll() {
+        if (!servicesList) return;
+        if (autoScrollingEnabled) {
+            servicesList.classList.add('auto-scrolling');
+        }
+    }
+
+    function stopAutoScroll() {
+        if (!servicesList) return;
+        servicesList.classList.remove('auto-scrolling');
+        const computedStyle = window.getComputedStyle(servicesList);
+        const currentTransform = computedStyle.transform;
+        if (currentTransform !== 'none') {
+            const matrix = new DOMMatrix(currentTransform);
+            servicesList.style.transform = `translateX(${matrix.m41}px)`;
+        }
+    }
+
+    function getScrollLimits() {
+        const cardWidth = document.querySelector('.service-card')?.offsetWidth || 400;
+        const gap = 20; // Gap between cards
+        const originalCardCount = servicesList.children.length / 2; // Half because we cloned them
+        const totalWidth = (cardWidth + gap) * originalCardCount;
+        
+        return {
+            min: -totalWidth, // Maximum scroll to the left
+            max: 0, // Maximum scroll to the right
+            cardWidth: cardWidth + gap
+        };
+    }
+
+    function handleManualScroll(direction) {
+        if (!servicesList || isManualScrolling) return;
+        
         isManualScrolling = true;
-        // Stop automatic scrolling temporarily
-        servicesList.style.animation = 'none';
-        servicesList.classList.add('scrolling');
+        autoScrollingEnabled = false;
+        stopAutoScroll();
 
-        // Calculate scroll amount (width of one card + gap)
-        const scrollAmount = 420; // 400px card width + 20px gap
+        const limits = getScrollLimits();
+        const currentTransform = servicesList.style.transform;
+        let currentPosition = 0;
 
-        // Update position based on direction
-        if (direction === 'left') {
-            currentPosition = Math.max(currentPosition - scrollAmount, 0);
-        } else {
-            const maxScroll = servicesList.scrollWidth - servicesList.parentElement.offsetWidth;
-            currentPosition = Math.min(currentPosition + scrollAmount, maxScroll);
-        }
-
-        // Apply the scroll
-        servicesList.style.transform = `translateX(-${currentPosition}px)`;
-
-        // Resume automatic scrolling after 2 seconds
-        setTimeout(() => {
-            servicesList.style.animation = '';
-            servicesList.classList.remove('scrolling');
-            servicesList.style.transform = ''; // Remove manual transform
-            currentPosition = 0; // Reset position
-            isManualScrolling = false;
-        }, 2000);
-    };
-
-    // Add hover events to arrows
-    leftArrow.addEventListener('mouseenter', pauseAutoScroll);
-    leftArrow.addEventListener('mouseleave', resumeAutoScroll);
-    rightArrow.addEventListener('mouseenter', pauseAutoScroll);
-    rightArrow.addEventListener('mouseleave', resumeAutoScroll);
-
-    // Add click event listeners to arrows
-    leftArrow.addEventListener('click', () => handleManualScroll('left'));
-    rightArrow.addEventListener('click', () => handleManualScroll('right'));
-
-    // Pause animation on hover over the services list
-    servicesList.addEventListener('mouseenter', pauseAutoScroll);
-    servicesList.addEventListener('mouseleave', resumeAutoScroll);
-
-    // Add hover event to the entire services wrapper
-    servicesWrapper.addEventListener('mouseenter', pauseAutoScroll);
-    servicesWrapper.addEventListener('mouseleave', resumeAutoScroll);
-
-    // Add touch swipe support
-    let touchStartX = 0;
-    let touchEndX = 0;
-
-    servicesList.addEventListener('touchstart', (e) => {
-        touchStartX = e.touches[0].clientX;
-        pauseAutoScroll();
-    });
-
-    servicesList.addEventListener('touchend', (e) => {
-        touchEndX = e.changedTouches[0].clientX;
-        const swipeDistance = touchStartX - touchEndX;
-
-        if (Math.abs(swipeDistance) > 50) {
-            if (swipeDistance > 0) {
-                handleManualScroll('right');
-            } else {
-                handleManualScroll('left');
+        if (currentTransform) {
+            const match = currentTransform.match(/-?\d+/);
+            if (match) {
+                currentPosition = parseInt(match[0]);
             }
-        } else {
-            resumeAutoScroll();
+        }
+
+        let newPosition = direction === 'left' 
+            ? currentPosition + limits.cardWidth
+            : currentPosition - limits.cardWidth;
+
+        // Apply boundaries
+        newPosition = Math.max(limits.min, Math.min(limits.max, newPosition));
+
+        // If we're at the end, wrap to the beginning
+        if (newPosition <= limits.min) {
+            newPosition = 0;
+        }
+        // If we're at the beginning and trying to go back, wrap to the end
+        else if (newPosition >= limits.max && direction === 'left') {
+            newPosition = limits.min + limits.cardWidth;
+        }
+
+        servicesList.style.transition = 'transform 0.5s ease';
+        servicesList.style.transform = `translateX(${newPosition}px)`;
+
+        // Reset transition after animation
+        setTimeout(() => {
+            isManualScrolling = false;
+        }, 500);
+    }
+
+    // Event Listeners
+    if (leftArrow) {
+        leftArrow.addEventListener('click', () => {
+            handleManualScroll('left');
+        });
+    }
+
+    if (rightArrow) {
+        rightArrow.addEventListener('click', () => {
+            handleManualScroll('right');
+        });
+    }
+
+    if (servicesWrapper) {
+        servicesWrapper.addEventListener('mouseenter', () => {
+            autoScrollingEnabled = false;
+            stopAutoScroll();
+        });
+
+        servicesWrapper.addEventListener('mouseleave', (event) => {
+            if (!servicesWrapper.contains(event.relatedTarget)) {
+                autoScrollingEnabled = true;
+                isManualScrolling = false;
+                startAutoScroll();
+            }
+        });
+    }
+
+    // Touch support with boundaries
+    if (servicesList) {
+        let touchStartX = 0;
+        
+        servicesList.addEventListener('touchstart', (e) => {
+            touchStartX = e.touches[0].clientX;
+            autoScrollingEnabled = false;
+            stopAutoScroll();
+        });
+
+        servicesList.addEventListener('touchend', (e) => {
+            const touchEndX = e.changedTouches[0].clientX;
+            const swipeDistance = touchStartX - touchEndX;
+
+            if (Math.abs(swipeDistance) > 50) {
+                handleManualScroll(swipeDistance > 0 ? 'right' : 'left');
+            }
+        });
+
+        // Add transition end listener to handle infinite scroll wrapping
+        servicesList.addEventListener('transitionend', () => {
+            const currentTransform = servicesList.style.transform;
+            const match = currentTransform.match(/-?\d+/);
+            if (match) {
+                const currentPosition = parseInt(match[0]);
+                const limits = getScrollLimits();
+                
+                // If we've scrolled past the end, reset to start
+                if (currentPosition <= limits.min) {
+                    servicesList.style.transition = 'none';
+                    servicesList.style.transform = 'translateX(0)';
+                    // Force reflow
+                    servicesList.offsetHeight;
+                    servicesList.style.transition = 'transform 0.5s ease';
+                }
+            }
+        });
+    }
+
+    // Initialize
+    setupInfiniteScroll();
+    startAutoScroll();
+
+    // Reset on window resize
+    window.addEventListener('resize', () => {
+        if (!isManualScrolling && servicesList) {
+            servicesList.style.transform = '';
+            startAutoScroll();
         }
     });
-
-    // Prevent scroll issues during touch
-    servicesList.addEventListener('touchmove', (e) => {
-        e.preventDefault();
-    }, { passive: false });
-
-    // Duplicate cards for infinite scroll if needed
-    const duplicateCards = () => {
-        const cards = servicesList.querySelectorAll('.service-card');
-        cards.forEach(card => {
-            const clone = card.cloneNode(true);
-            servicesList.appendChild(clone);
-        });
-    };
-
-    // Call duplicate function
-    duplicateCards();
 });
 // Add this to your script.js file
 // Add this to your script.js file
