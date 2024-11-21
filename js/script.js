@@ -608,3 +608,51 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
+// Add this to your script.js file
+
+document.addEventListener('DOMContentLoaded', function() {
+    const modal = document.getElementById('servicesModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalDescription = document.getElementById('modalDescription');
+    const videoFrame = document.getElementById('videoFrame');
+    const closeModal = document.querySelector('.close-modal');
+
+    // Add click event to all service cards
+    document.querySelectorAll('.service-card').forEach(card => {
+        card.addEventListener('click', function() {
+            const title = this.getAttribute('data-title');
+            const description = this.getAttribute('data-description');
+            const videoId = this.getAttribute('data-video-id');
+
+            modalTitle.textContent = title;
+            modalDescription.textContent = description;
+            videoFrame.src = `https://www.youtube.com/embed/${videoId}`;
+            
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden'; // Prevent scrolling when modal is open
+        });
+    });
+
+    // Close modal functionality
+    closeModal.addEventListener('click', closeModalFunction);
+    
+    // Close modal when clicking outside
+    window.addEventListener('click', function(event) {
+        if (event.target == modal) {
+            closeModalFunction();
+        }
+    });
+
+    // Close modal with Escape key
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape' && modal.style.display === 'block') {
+            closeModalFunction();
+        }
+    });
+
+    function closeModalFunction() {
+        modal.style.display = 'none';
+        document.body.style.overflow = 'auto'; // Re-enable scrolling
+        videoFrame.src = ''; // Stop video playback
+    }
+});
