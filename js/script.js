@@ -752,3 +752,99 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
+
+// Add this to your script.js file
+
+document.addEventListener('DOMContentLoaded', function() {
+    const modal = document.getElementById('servicesModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalDescription = document.getElementById('modalDescription');
+    const videoContainer = document.querySelector('.video-container');
+    const galleryContainer = document.querySelector('.gallery-container');
+    const videoFrame = document.getElementById('videoFrame');
+    const galleryImage = document.getElementById('galleryImage');
+    const closeModal = document.querySelector('.close-modal');
+    const prevButton = document.querySelector('.prev-img');
+    const nextButton = document.querySelector('.next-img');
+
+    let currentImageIndex = 0;
+    let imagesList = [];
+
+    // Add click event to all service cards
+    document.querySelectorAll('.service-card').forEach(card => {
+        card.addEventListener('click', function() {
+            const type = this.getAttribute('data-type');
+            const title = this.getAttribute('data-title');
+            const description = this.getAttribute('data-description');
+
+            modalTitle.textContent = title;
+            modalDescription.textContent = description;
+
+            // Reset displays
+            videoContainer.style.display = 'none';
+            galleryContainer.style.display = 'none';
+
+            if (type === 'video') {
+                // Handle video content
+                const videoId = this.getAttribute('data-video-id');
+                videoContainer.style.display = 'block';
+                videoFrame.src = `https://www.youtube.com/embed/${videoId}`;
+            } else if (type === 'gallery') {
+                // Handle gallery content
+                galleryContainer.style.display = 'block';
+                imagesList = this.getAttribute('data-images').split(',');
+                currentImageIndex = 0;
+                updateGalleryImage();
+            }
+
+            modal.style.display = 'block';
+            document.body.style.overflow = 'hidden';
+        });
+    });
+
+    // Gallery navigation
+    function updateGalleryImage() {
+        galleryImage.src = imagesList[currentImageIndex];
+    }
+
+    prevButton.addEventListener('click', () => {
+        currentImageIndex = (currentImageIndex - 1 + imagesList.length) % imagesList.length;
+        updateGalleryImage();
+    });
+
+    nextButton.addEventListener('click', () => {
+        currentImageIndex = (currentImageIndex + 1) % imagesList.length;
+        updateGalleryImage();
+    });
+
+    // Close modal functionality
+    function closeModalFunction() {
+        modal.style.display = 'none';
+        document.body.style.overflow = 'auto';
+        videoFrame.src = ''; // Stop video playback
+        imagesList = []; // Clear images list
+        currentImageIndex = 0;
+    }
+
+    closeModal.addEventListener('click', closeModalFunction);
+    
+    window.addEventListener('click', function(event) {
+        if (event.target == modal) {
+            closeModalFunction();
+        }
+    });
+
+    document.addEventListener('keydown', function(event) {
+        if (event.key === 'Escape' && modal.style.display === 'block') {
+            closeModalFunction();
+        }
+        // Gallery keyboard navigation
+        if (galleryContainer.style.display === 'block') {
+            if (event.key === 'ArrowLeft') {
+                prevButton.click();
+            } else if (event.key === 'ArrowRight') {
+                nextButton.click();
+            }
+        }
+    });
+});
