@@ -130,6 +130,7 @@
 <!-- Services Section HTML -->
 <!-- Services Section -->
 <!-- Replace your current services section in index.html with this code -->
+<!-- Replace your current services section in index.html with this code -->
 <section id="services">
     <div class="container">
         <h1 class="sub-title">My Works</h1>
@@ -142,18 +143,27 @@
             </div>
             
             <div class="services-list">
-                <!-- Service Cards -->
-                <div class="service-card" data-title="OBLISK" data-description="A dynamic middle section that rotates automatically. Motion sensors pause the rotation when people approach the structure." data-video-id="6A8sllOVaKE">
+                <!-- Example card with video -->
+                <div class="service-card" 
+                    data-type="video"
+                    data-title="OBLISK" 
+                    data-description="A dynamic middle section that rotates automatically. Motion sensors pause the rotation when people approach the structure." 
+                    data-video-id="6A8sllOVaKE">
                     <img src="images/Oblisk (1).jpg" alt="OBLISK">
-                    <h2>OBLISK <i class="fas fa-expand"></i></h2>
+                    <h2>OBLISK <i class="fas fa-play-circle"></i></h2>
                 </div>
 
-                <div class="service-card" data-title="MOTION MAX" data-description="Tower with Linear and rotational motion" data-video-id="6u3XdiVBcxY">
-                    <img src="images/6_Tower.jpg" alt="MOTION MAX">
-                    <h2>MOTION MAX <i class="fas fa-expand"></i></h2>
+                <!-- Example card with image gallery -->
+                <div class="service-card"
+                    data-type="gallery"
+                    data-title="Project with Gallery"
+                    data-description="This project showcases multiple images in a gallery view."
+                    data-images="images/project1.jpg,images/project2.jpg,images/project3.jpg">
+                    <img src="images/project1.jpg" alt="Project Name">
+                    <h2>Project Name <i class="fas fa-images"></i></h2>
                 </div>
 
-                <!-- Add more cards following the same pattern -->
+                <!-- Add more cards following either pattern -->
             </div>
 
             <!-- Right Arrow -->
@@ -170,9 +180,21 @@
         <div class="modal-content">
             <span class="close-modal">&times;</span>
             <h2 id="modalTitle"></h2>
+            
+            <!-- Video Container -->
             <div class="video-container">
                 <iframe id="videoFrame" width="100%" height="315" src="" frameborder="0" allowfullscreen></iframe>
             </div>
+
+            <!-- Gallery Container -->
+            <div class="gallery-container">
+                <button class="gallery-nav prev-img">&lt;</button>
+                <div class="gallery-image-wrapper">
+                    <img id="galleryImage" src="" alt="Gallery Image">
+                </div>
+                <button class="gallery-nav next-img">&gt;</button>
+            </div>
+
             <p id="modalDescription"></p>
         </div>
     </div>
