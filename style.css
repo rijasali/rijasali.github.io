@@ -287,7 +287,11 @@ nav ul li a:hover::after {
     padding: 20px 0;
     transition: transform 0.5s ease;
     width: max-content;
-    animation: scroll 40s linear infinite; /* Re-add the animation */
+}
+
+/* Add or update the animation for auto-scrolling */
+.services-list.auto-scrolling {
+    animation: scroll 40s linear infinite;
 }
 @keyframes scroll {
     0% {
