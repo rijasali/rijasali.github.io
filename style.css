@@ -250,8 +250,7 @@ nav ul li a:hover::after {
 
 /* ----------------services------------- */
 /* Services Section Styling */
-/* Services Section Styling */
-/* Services Section Base Styles */
+/* Services Section Base */
 #services {
     padding: 60px 0;
     background: #000000;
@@ -273,14 +272,13 @@ nav ul li a:hover::after {
     margin-bottom: 30px;
 }
 
-/* Services Wrapper */
+/* Services Layout */
 .services-wrapper {
     width: 100%;
     overflow: hidden;
     position: relative;
 }
 
-/* Services List Container */
 .services-list {
     display: flex;
     gap: 20px;
@@ -289,34 +287,30 @@ nav ul li a:hover::after {
     width: max-content;
 }
 
-/* Add or update the animation for auto-scrolling */
+/* Auto-scroll Animation */
 .services-list.auto-scrolling {
     animation: scroll 40s linear infinite;
 }
+
 @keyframes scroll {
-    0% {
-        transform: translateX(0);
-    }
-    100% {
-        transform: translateX(calc(-50% - 10px));
-    }
+    0% { transform: translateX(0); }
+    100% { transform: translateX(calc(-50% - 10px)); }
 }
 
-/* Add hover pause */
 .services-list:hover,
 .services-list.scrolling {
     animation-play-state: paused;
 }
-/* Service Card Styles */
+
+/* Service Cards */
 .service-card {
     flex: 0 0 auto;
     width: 400px;
     background: #1a1a1a;
     border-radius: 10px;
     overflow: hidden;
-    transition: all 0.3s ease;
-    text-decoration: none;
     cursor: pointer;
+    transition: all 0.3s ease;
 }
 
 .service-card:hover {
@@ -347,6 +341,7 @@ nav ul li a:hover::after {
 .service-card h2 i {
     color: #ff004f;
     font-size: 20px;
+    margin-left: 10px;
     transition: color 0.3s ease;
 }
 
@@ -354,17 +349,21 @@ nav ul li a:hover::after {
     color: #ff0000;
 }
 
+/* Content Type Icons */
+.service-card h2 i.fa-play-circle { color: #ff0000; }
+.service-card h2 i.fa-images { color: #4CAF50; }
+
 /* Scroll Arrows */
 .scroll-arrow {
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    width: 70px;  /* Increased from 50px to 70px */
-    height: 70px; /* Increased from 50px to 70px */
+    width: 70px;
+    height: 70px;
     background: rgba(255, 0, 79, 0.2);
     backdrop-filter: blur(5px);
     -webkit-backdrop-filter: blur(5px);
-    border: 2px solid rgba(255, 255, 255, 0.1); /* Increased border width */
+    border: 2px solid rgba(255, 255, 255, 0.1);
     border-radius: 50%;
     display: flex;
     align-items: center;
@@ -372,28 +371,19 @@ nav ul li a:hover::after {
     cursor: pointer;
     z-index: 10;
     transition: all 0.3s ease;
-}
-@keyframes pulse {
-    0% {
-        box-shadow: 0 0 0 0 rgba(255, 0, 79, 0.4);
-    }
-    70% {
-        box-shadow: 0 0 0 10px rgba(255, 0, 79, 0);
-    }
-    100% {
-        box-shadow: 0 0 0 0 rgba(255, 0, 79, 0);
-    }
+    animation: pulse 2s infinite;
 }
 
-.scroll-arrow {
-    /* Add to existing scroll-arrow styles */
-    animation: pulse 2s infinite;
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(255, 0, 79, 0.4); }
+    70% { box-shadow: 0 0 0 10px rgba(255, 0, 79, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(255, 0, 79, 0); }
 }
 
 .scroll-arrow:hover {
     background: rgba(255, 0, 79, 0.8);
     transform: translateY(-50%) scale(1.1);
-    box-shadow: 0 0 25px rgba(255, 0, 79, 0.5); /* Increased shadow */
+    box-shadow: 0 0 25px rgba(255, 0, 79, 0.5);
 }
 
 .scroll-arrow::before {
@@ -413,34 +403,29 @@ nav ul li a:hover::after {
 .scroll-arrow:hover::before {
     opacity: 1;
 }
+
 .scroll-arrow:active {
     transform: translateY(-50%) scale(0.95);
 }
 
-.left-arrow {
-    left: 30px;
-}
-
-.right-arrow {
-    right: 30px;
-}
+.left-arrow { left: 30px; }
+.right-arrow { right: 30px; }
 
 .scroll-arrow svg {
-    width: 35px;  /* Increased from 24px to 35px */
-    height: 35px; /* Increased from 24px to 35px */
+    width: 35px;
+    height: 35px;
     transition: transform 0.3s ease;
 }
+
 .scroll-arrow:hover svg {
     transform: scale(1.2);
 }
 
 .scroll-arrow svg path {
-    stroke: #e80a0a; /* White color for the arrow */
+    stroke: #e80a0a;
     stroke-width: 2;
     transition: stroke 0.3s ease;
 }
-
-/* Add these styles to your style.css file */
 
 /* Modal Styles */
 .modal {
@@ -479,76 +464,7 @@ nav ul li a:hover::after {
     color: #ff004f;
 }
 
-.video-container {
-    position: relative;
-    padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
-    height: 0;
-    margin: 20px 0;
-}
-
-.video-container iframe {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-}
-
-/* Update service card styles */
-.service-card {
-    cursor: pointer;
-    transition: transform 0.3s ease;
-}
-
-.service-card:hover {
-    transform: scale(1.02);
-}
-
-.service-card h2 i {
-    margin-left: 10px;
-    font-size: 0.8em;
-}
-
-/* Add these styles to your style.css file */
-
-/* Modal Base Styles */
-.modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.9);
-    z-index: 1000;
-}
-
-.modal-content {
-    background: #1a1a1a;
-    margin: 5% auto;
-    padding: 30px;
-    width: 90%;
-    max-width: 800px;
-    border-radius: 10px;
-    position: relative;
-    color: white;
-}
-
-.close-modal {
-    position: absolute;
-    right: 20px;
-    top: 15px;
-    font-size: 28px;
-    cursor: pointer;
-    color: #888;
-    transition: color 0.3s ease;
-}
-
-.close-modal:hover {
-    color: #ff004f;
-}
-
-/* Video Container Styles */
+/* Content Containers */
 .video-container {
     display: none;
     position: relative;
@@ -565,7 +481,6 @@ nav ul li a:hover::after {
     height: 100%;
 }
 
-/* Gallery Container Styles */
 .gallery-container {
     display: none;
     position: relative;
@@ -589,6 +504,7 @@ nav ul li a:hover::after {
     object-fit: contain;
 }
 
+/* Gallery Navigation */
 .gallery-nav {
     position: absolute;
     top: 50%;
@@ -613,51 +529,10 @@ nav ul li a:hover::after {
     background: rgba(255, 255, 255, 0.3);
 }
 
-.prev-img {
-    left: 10px;
-}
+.prev-img { left: 10px; }
+.next-img { right: 10px; }
 
-.next-img {
-    right: 10px;
-}
-
-/* Service Card Updates */
-.service-card h2 i.fa-play-circle {
-    color: #ff0000;
-}
-
-.service-card h2 i.fa-images {
-    color: #4CAF50;
-}
-
-/* Responsive Adjustments */
-@media (max-width: 768px) {
-    .modal-content {
-        margin: 15% auto;
-        width: 95%;
-        padding: 20px;
-    }
-
-    .gallery-container {
-        height: 300px;
-    }
-
-    .gallery-nav {
-        padding: 10px;
-        width: 40px;
-        height: 40px;
-    }
-}
-/* Responsive adjustments */
-@media (max-width: 768px) {
-    .modal-content {
-        margin: 15% auto;
-        width: 95%;
-        padding: 20px;
-    }
-}
-
-/* Responsive Styles - UPDATED VERSION */
+/* Responsive Design */
 @media (max-width: 768px) {
     #services .sub-title {
         font-size: 40px;
@@ -687,20 +562,28 @@ nav ul li a:hover::after {
         height: 20px;
     }
     
-    .left-arrow {
-        left: 10px;
+    .left-arrow { left: 10px; }
+    .right-arrow { right: 10px; }
+
+    .modal-content {
+        margin: 15% auto;
+        width: 95%;
+        padding: 20px;
     }
-    
-    .right-arrow {
-        right: 10px;
+
+    .gallery-container {
+        height: 300px;
+    }
+
+    .gallery-nav {
+        padding: 10px;
+        width: 40px;
+        height: 40px;
     }
 }
 
-/* Large Screen Optimizations */
 @media (min-width: 1920px) {
-    .container {
-        max-width: 1800px;
-    }
+    .container { max-width: 1800px; }
 
     .service-card {
         width: 500px;
@@ -715,8 +598,6 @@ nav ul li a:hover::after {
         padding: 20px;
     }
 }
-/* Remove the edge fade effects for cleaner look */
-/* Portfolio Section Styling */
 
 /* Add these new styles to your style.css file */
 
