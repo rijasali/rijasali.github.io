@@ -464,7 +464,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const modalTitle = document.getElementById('modalTitle');
     const modalDescription = document.getElementById('modalDescription');
     const githubLink = document.getElementById('githubLink');
-    const youtubeLink = document.getElementById('youtubeLink');
+    const youtubeFrame = document.getElementById('youtubeFrame');
     const modalButtons = document.querySelector('.modal-buttons');
     const closeBtn = modal.querySelector('.close-modal');
 
@@ -489,20 +489,19 @@ document.addEventListener('DOMContentLoaded', function() {
                 githubLink.style.display = 'none';
             }
 
-            // Handle YouTube button
+            // Handle YouTube video
             if (hasYoutube && youtube) {
-                youtubeLink.style.display = 'flex';
-                youtubeLink.href = youtube;
+                // Extract video ID from URL
+                const videoId = youtube.split('v=')[1]?.split('&')[0] || 
+                               youtube.split('youtu.be/')[1]?.split('?')[0];
+                if (videoId) {
+                    youtubeFrame.src = `https://www.youtube.com/embed/${videoId}`;
+                    youtubeFrame.parentElement.style.display = 'block';
+                }
             } else {
-                youtubeLink.style.display = 'none';
+                youtubeFrame.src = '';
+                youtubeFrame.parentElement.style.display = 'none';
             }
-
-            // Show/hide buttons container
-            modalButtons.style.display = (hasGithub || hasYoutube) ? 'flex' : 'none';
-            
-            // Add single-button class if only one button is visible
-            modalButtons.classList.toggle('single-button', 
-                (hasGithub && !hasYoutube) || (!hasGithub && hasYoutube));
 
             // Show modal
             modal.style.display = 'block';
@@ -510,29 +509,21 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Close button handler
-    closeBtn.addEventListener('click', () => {
+    // Close modal and stop video
+    function closeModal() {
         modal.style.display = 'none';
         document.body.style.overflow = 'auto';
-    });
+        youtubeFrame.src = ''; // Stops the video
+    }
 
-    // Click outside modal to close
-    window.addEventListener('click', (event) => {
-        if (event.target === modal) {
-            modal.style.display = 'none';
-            document.body.style.overflow = 'auto';
-        }
+    closeBtn.addEventListener('click', closeModal);
+    window.addEventListener('click', (e) => {
+        if (e.target === modal) closeModal();
     });
-
-    // Close on escape key
-    document.addEventListener('keydown', (event) => {
-        if (event.key === 'Escape' && modal.style.display === 'block') {
-            modal.style.display = 'none';
-            document.body.style.overflow = 'auto';
-        }
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal.style.display === 'block') closeModal();
     });
 });
-
 // Add this to your script.js file
 
 document.addEventListener('DOMContentLoaded', function() {
