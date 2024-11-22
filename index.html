@@ -667,17 +667,21 @@ Each LED can be individually controlled to create dynamic patterns and animation
             </div>
 
             <!-- Project Modal -->
+<!-- Project Modal -->
             <div id="projectModal" class="modal">
                 <div class="modal-content">
                     <span class="close-modal">&times;</span>
                     <h2 id="modalTitle"></h2>
+                    
+                    <!-- Add video container -->
+                    <div class="video-container">
+                        <iframe id="youtubeFrame" frameborder="0" allowfullscreen></iframe>
+                    </div>
+                    
                     <p id="modalDescription"></p>
                     <div class="modal-buttons">
                         <a id="githubLink" class="modal-btn github-btn" target="_blank">
                             <i class="fab fa-github"></i> View on GitHub
-                        </a>
-                        <a id="youtubeLink" class="modal-btn youtube-btn" target="_blank">
-                            <i class="fab fa-youtube"></i> Watch Video
                         </a>
                     </div>
                 </div>
