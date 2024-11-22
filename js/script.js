@@ -465,51 +465,44 @@ document.addEventListener('DOMContentLoaded', function() {
     const modalDescription = document.getElementById('modalDescription');
     const githubLink = document.getElementById('githubLink');
     const youtubeLink = document.getElementById('youtubeLink');
-    const closeModal = document.querySelector('.close-modal');
+    const modalButtons = document.querySelector('.modal-buttons');
+    const closeBtn = modal.querySelector('.close-modal');
 
-    // Add click event to all view project buttons
+    // View project button click handler
     document.querySelectorAll('.view-project').forEach(button => {
         button.addEventListener('click', function() {
-            // Get project data from button attributes
             const title = this.getAttribute('data-title');
             const description = this.getAttribute('data-description');
-            const hasGithub = this.getAttribute('data-has-github') === 'true';
-            const hasYoutube = this.getAttribute('data-has-youtube') === 'true';
             const github = this.getAttribute('data-github');
             const youtube = this.getAttribute('data-youtube');
+            const hasGithub = this.getAttribute('data-has-github') === 'true';
+            const hasYoutube = this.getAttribute('data-has-youtube') === 'true';
 
-            // Update modal content
             modalTitle.textContent = title;
             modalDescription.textContent = description;
 
-            // Show/hide GitHub button based on availability
-            if (hasGithub) {
+            // Handle GitHub button
+            if (hasGithub && github) {
                 githubLink.style.display = 'flex';
                 githubLink.href = github;
             } else {
                 githubLink.style.display = 'none';
             }
 
-            // Show/hide YouTube button based on availability
-            if (hasYoutube) {
+            // Handle YouTube button
+            if (hasYoutube && youtube) {
                 youtubeLink.style.display = 'flex';
                 youtubeLink.href = youtube;
             } else {
                 youtubeLink.style.display = 'none';
             }
 
-            // Handle case when no buttons are visible
-            const modalButtons = document.querySelector('.modal-buttons');
-            if (!hasGithub && !hasYoutube) {
-                modalButtons.style.display = 'none';
-            } else {
-                modalButtons.style.display = 'flex';
-                if (hasGithub && !hasYoutube || !hasGithub && hasYoutube) {
-                    modalButtons.classList.add('single-button');
-                } else {
-                    modalButtons.classList.remove('single-button');
-                }
-            }
+            // Show/hide buttons container
+            modalButtons.style.display = (hasGithub || hasYoutube) ? 'flex' : 'none';
+            
+            // Add single-button class if only one button is visible
+            modalButtons.classList.toggle('single-button', 
+                (hasGithub && !hasYoutube) || (!hasGithub && hasYoutube));
 
             // Show modal
             modal.style.display = 'block';
@@ -517,145 +510,27 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Close modal when clicking the close button
-    closeModal.addEventListener('click', function() {
+    // Close button handler
+    closeBtn.addEventListener('click', () => {
         modal.style.display = 'none';
         document.body.style.overflow = 'auto';
     });
 
-    // Close modal when clicking outside
-    window.addEventListener('click', function(event) {
-        if (event.target == modal) {
+    // Click outside modal to close
+    window.addEventListener('click', (event) => {
+        if (event.target === modal) {
             modal.style.display = 'none';
             document.body.style.overflow = 'auto';
         }
     });
 
-    // Close modal with Escape key
-    document.addEventListener('keydown', function(event) {
+    // Close on escape key
+    document.addEventListener('keydown', (event) => {
         if (event.key === 'Escape' && modal.style.display === 'block') {
             modal.style.display = 'none';
             document.body.style.overflow = 'auto';
         }
     });
-});
-
-// Add this to your script.js file
-document.addEventListener('DOMContentLoaded', function() {
-    const workList = document.querySelector('.work-list');
-    const portfolioBtn = document.getElementById('portfolioExpandBtn');
-    const btnText = portfolioBtn.querySelector('.btn-text');
-    const btnIcon = portfolioBtn.querySelector('i');
-    let isExpanded = false;
-
-    // Initialize in collapsed state
-    workList.classList.add('collapsed');
-
-    portfolioBtn.addEventListener('click', function() {
-        isExpanded = !isExpanded;
-        
-        if (isExpanded) {
-            workList.classList.remove('collapsed');
-            workList.classList.add('expanded');
-            btnText.textContent = 'Show Less';
-            btnIcon.classList.remove('fa-chevron-down');
-            btnIcon.classList.add('fa-chevron-up');
-        } else {
-            workList.classList.remove('expanded');
-            workList.classList.add('collapsed');
-            btnText.textContent = 'Explore Full Portfolio';
-            btnIcon.classList.remove('fa-chevron-up');
-            btnIcon.classList.add('fa-chevron-down');
-            
-            // Smooth scroll to portfolio section when collapsing
-            document.querySelector('#portfolio').scrollIntoView({
-                behavior: 'smooth'
-            });
-        }
-    });
-});
-
-function copyToClipboard(text) {
-    // Modern clipboard API method
-    navigator.clipboard.writeText(text)
-        .then(() => {
-            // Find and update the clicked element
-            const contactItems = document.querySelectorAll('.contact-item');
-            contactItems.forEach(item => {
-                if (item.querySelector('.contact-text').textContent.includes(text)) {
-                    // Add copied class
-                    item.classList.add('copied');
-                    
-                    // Remove copied class after animation
-                    setTimeout(() => {
-                        item.classList.remove('copied');
-                    }, 2000);
-                }
-            });
-        })
-        .catch(err => {
-            console.error('Failed to copy text: ', err);
-        });
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-    // Add click handlers to contact items
-    const contactItems = document.querySelectorAll('.contact-item');
-    contactItems.forEach(item => {
-        item.addEventListener('click', function() {
-            const textToCopy = this.querySelector('.contact-text').textContent;
-            copyToClipboard(textToCopy);
-        });
-    });
-});
-
-// Add this to your script.js file
-
-document.addEventListener('DOMContentLoaded', function() {
-    const modal = document.getElementById('servicesModal');
-    const modalTitle = document.getElementById('modalTitle');
-    const modalDescription = document.getElementById('modalDescription');
-    const videoFrame = document.getElementById('videoFrame');
-    const closeModal = document.querySelector('.close-modal');
-
-    // Add click event to all service cards
-    document.querySelectorAll('.service-card').forEach(card => {
-        card.addEventListener('click', function() {
-            const title = this.getAttribute('data-title');
-            const description = this.getAttribute('data-description');
-            const videoId = this.getAttribute('data-video-id');
-
-            modalTitle.textContent = title;
-            modalDescription.textContent = description;
-            videoFrame.src = `https://www.youtube.com/embed/${videoId}`;
-            
-            modal.style.display = 'block';
-            document.body.style.overflow = 'hidden'; // Prevent scrolling when modal is open
-        });
-    });
-
-    // Close modal functionality
-    closeModal.addEventListener('click', closeModalFunction);
-    
-    // Close modal when clicking outside
-    window.addEventListener('click', function(event) {
-        if (event.target == modal) {
-            closeModalFunction();
-        }
-    });
-
-    // Close modal with Escape key
-    document.addEventListener('keydown', function(event) {
-        if (event.key === 'Escape' && modal.style.display === 'block') {
-            closeModalFunction();
-        }
-    });
-
-    function closeModalFunction() {
-        modal.style.display = 'none';
-        document.body.style.overflow = 'auto'; // Re-enable scrolling
-        videoFrame.src = ''; // Stop video playback
-    }
 });
 
 // Add this to your script.js file
