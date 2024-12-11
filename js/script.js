@@ -102,6 +102,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // Add this at the end of your script.js file
+// Replace your existing services carousel code in script.js with this version
 document.addEventListener('DOMContentLoaded', function() {
     const servicesList = document.querySelector('.services-list');
     const leftArrow = document.querySelector('.left-arrow');
@@ -109,12 +110,12 @@ document.addEventListener('DOMContentLoaded', function() {
     const servicesWrapper = document.querySelector('.services-wrapper');
     let isManualScrolling = false;
     let autoScrollingEnabled = true;
+    let lastScrollPosition = 0;
+    let autoScrollAnimation = null;
 
-    // Clone items for smooth infinite scroll
     function setupInfiniteScroll() {
         if (!servicesList) return;
         const originalCards = Array.from(servicesList.children);
-        // Only clone if we haven't already cloned
         if (originalCards.length === servicesList.querySelectorAll('.service-card').length) {
             originalCards.forEach(card => {
                 const clone = card.cloneNode(true);
@@ -123,35 +124,63 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    function calculateAutoScrollPosition() {
+        const totalWidth = servicesList.scrollWidth / 2; // Half because we cloned the items
+        const scrollDuration = 40000; // 40 seconds for one complete scroll
+        const currentTime = Date.now();
+        const scrollPosition = (currentTime % scrollDuration) / scrollDuration * -totalWidth;
+        return scrollPosition;
+    }
+
     function startAutoScroll() {
-        if (!servicesList) return;
-        if (autoScrollingEnabled) {
-            servicesList.classList.add('auto-scrolling');
+        if (!servicesList || isManualScrolling) return;
+        
+        // Cancel any existing animation
+        if (autoScrollAnimation) {
+            cancelAnimationFrame(autoScrollAnimation);
         }
+
+        let startTime = Date.now();
+        const startPosition = lastScrollPosition;
+        const totalWidth = servicesList.scrollWidth / 2;
+        
+        function animate() {
+            if (!autoScrollingEnabled) return;
+
+            const currentTime = Date.now();
+            const elapsed = currentTime - startTime;
+            const scrollDuration = 40000; // 40 seconds for one complete scroll
+            
+            // Calculate new position based on elapsed time
+            const progress = (elapsed % scrollDuration) / scrollDuration;
+            const newPosition = startPosition + (progress * -totalWidth);
+
+            // Apply transform
+            servicesList.style.transform = `translateX(${newPosition}px)`;
+            lastScrollPosition = newPosition;
+
+            // Reset position if we've scrolled past the end
+            if (newPosition <= -totalWidth) {
+                startTime = currentTime;
+                lastScrollPosition = 0;
+                servicesList.style.transform = 'translateX(0)';
+            }
+
+            autoScrollAnimation = requestAnimationFrame(animate);
+        }
+
+        autoScrollAnimation = requestAnimationFrame(animate);
     }
 
     function stopAutoScroll() {
-        if (!servicesList) return;
-        servicesList.classList.remove('auto-scrolling');
-        const computedStyle = window.getComputedStyle(servicesList);
-        const currentTransform = computedStyle.transform;
-        if (currentTransform !== 'none') {
-            const matrix = new DOMMatrix(currentTransform);
-            servicesList.style.transform = `translateX(${matrix.m41}px)`;
+        if (autoScrollAnimation) {
+            cancelAnimationFrame(autoScrollAnimation);
+            autoScrollAnimation = null;
         }
-    }
-
-    function getScrollLimits() {
-        const cardWidth = document.querySelector('.service-card')?.offsetWidth || 400;
-        const gap = 20; // Gap between cards
-        const originalCardCount = servicesList.children.length / 2; // Half because we cloned them
-        const totalWidth = (cardWidth + gap) * originalCardCount;
-        
-        return {
-            min: -totalWidth, // Maximum scroll to the left
-            max: 0, // Maximum scroll to the right
-            cardWidth: cardWidth + gap
-        };
+        // Keep track of where we stopped
+        const computedStyle = window.getComputedStyle(servicesList);
+        const matrix = new DOMMatrix(computedStyle.transform);
+        lastScrollPosition = matrix.m41;
     }
 
     function handleManualScroll(direction) {
@@ -161,53 +190,44 @@ document.addEventListener('DOMContentLoaded', function() {
         autoScrollingEnabled = false;
         stopAutoScroll();
 
-        const limits = getScrollLimits();
-        const currentTransform = servicesList.style.transform;
-        let currentPosition = 0;
-
-        if (currentTransform) {
-            const match = currentTransform.match(/-?\d+/);
-            if (match) {
-                currentPosition = parseInt(match[0]);
-            }
-        }
-
-        let newPosition = direction === 'left' 
-            ? currentPosition + limits.cardWidth
-            : currentPosition - limits.cardWidth;
-
-        // Apply boundaries
-        newPosition = Math.max(limits.min, Math.min(limits.max, newPosition));
-
-        // If we're at the end, wrap to the beginning
-        if (newPosition <= limits.min) {
-            newPosition = 0;
-        }
-        // If we're at the beginning and trying to go back, wrap to the end
-        else if (newPosition >= limits.max && direction === 'left') {
-            newPosition = limits.min + limits.cardWidth;
-        }
-
+        const cardWidth = document.querySelector('.service-card')?.offsetWidth || 400;
+        const gap = 20;
+        const scrollAmount = cardWidth + gap;
+        
+        // Calculate new position
+        const newPosition = lastScrollPosition + (direction === 'left' ? scrollAmount : -scrollAmount);
+        
+        // Apply the scroll
         servicesList.style.transition = 'transform 0.5s ease';
         servicesList.style.transform = `translateX(${newPosition}px)`;
+        lastScrollPosition = newPosition;
 
-        // Reset transition after animation
+        // Handle wrapping
+        const totalWidth = servicesList.scrollWidth / 2;
+        if (Math.abs(lastScrollPosition) >= totalWidth) {
+            lastScrollPosition = 0;
+            setTimeout(() => {
+                servicesList.style.transition = 'none';
+                servicesList.style.transform = 'translateX(0)';
+            }, 500);
+        }
+
         setTimeout(() => {
             isManualScrolling = false;
+            if (!servicesWrapper.matches(':hover')) {
+                autoScrollingEnabled = true;
+                startAutoScroll();
+            }
         }, 500);
     }
 
     // Event Listeners
     if (leftArrow) {
-        leftArrow.addEventListener('click', () => {
-            handleManualScroll('left');
-        });
+        leftArrow.addEventListener('click', () => handleManualScroll('left'));
     }
 
     if (rightArrow) {
-        rightArrow.addEventListener('click', () => {
-            handleManualScroll('right');
-        });
+        rightArrow.addEventListener('click', () => handleManualScroll('right'));
     }
 
     if (servicesWrapper) {
@@ -216,50 +236,10 @@ document.addEventListener('DOMContentLoaded', function() {
             stopAutoScroll();
         });
 
-        servicesWrapper.addEventListener('mouseleave', (event) => {
-            if (!servicesWrapper.contains(event.relatedTarget)) {
+        servicesWrapper.addEventListener('mouseleave', () => {
+            if (!isManualScrolling) {
                 autoScrollingEnabled = true;
-                isManualScrolling = false;
                 startAutoScroll();
-            }
-        });
-    }
-
-    // Touch support with boundaries
-    if (servicesList) {
-        let touchStartX = 0;
-        
-        servicesList.addEventListener('touchstart', (e) => {
-            touchStartX = e.touches[0].clientX;
-            autoScrollingEnabled = false;
-            stopAutoScroll();
-        });
-
-        servicesList.addEventListener('touchend', (e) => {
-            const touchEndX = e.changedTouches[0].clientX;
-            const swipeDistance = touchStartX - touchEndX;
-
-            if (Math.abs(swipeDistance) > 50) {
-                handleManualScroll(swipeDistance > 0 ? 'right' : 'left');
-            }
-        });
-
-        // Add transition end listener to handle infinite scroll wrapping
-        servicesList.addEventListener('transitionend', () => {
-            const currentTransform = servicesList.style.transform;
-            const match = currentTransform.match(/-?\d+/);
-            if (match) {
-                const currentPosition = parseInt(match[0]);
-                const limits = getScrollLimits();
-                
-                // If we've scrolled past the end, reset to start
-                if (currentPosition <= limits.min) {
-                    servicesList.style.transition = 'none';
-                    servicesList.style.transform = 'translateX(0)';
-                    // Force reflow
-                    servicesList.offsetHeight;
-                    servicesList.style.transition = 'transform 0.5s ease';
-                }
             }
         });
     }
@@ -270,8 +250,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Reset on window resize
     window.addEventListener('resize', () => {
-        if (!isManualScrolling && servicesList) {
-            servicesList.style.transform = '';
+        lastScrollPosition = 0;
+        if (autoScrollAnimation) {
+            cancelAnimationFrame(autoScrollAnimation);
+        }
+        if (!isManualScrolling) {
             startAutoScroll();
         }
     });
