@@ -290,18 +290,7 @@ nav ul li a:hover::after {
     /* Re-add the animation */
 }
 
-.services-list.auto-scrolling {
-    animation: scroll 40s linear infinite;
-}
 
-@keyframes scroll {
-    0% {
-        transform: translateX(0);
-    }
-    100% {
-        transform: translateX(calc(-50% - 10px));
-    }
-}
 
 /* Add hover pause */
 .services-list:hover,
