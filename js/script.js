@@ -103,6 +103,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Add this at the end of your script.js file
 // Replace your existing services carousel code in script.js with this version
+// Replace your existing services carousel code in script.js with this version
 document.addEventListener('DOMContentLoaded', function() {
     const servicesList = document.querySelector('.services-list');
     const leftArrow = document.querySelector('.left-arrow');
