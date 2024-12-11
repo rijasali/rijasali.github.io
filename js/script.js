@@ -603,3 +603,46 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 });
+
+// Add this to your script.js
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('form');
+    const msg = document.getElementById('msg');
+
+    if (form) {
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const submitBtn = form.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = 'Sending...';
+            
+            fetch(form.action, {
+                method: 'POST',
+                body: new FormData(form),
+                headers: {
+                    'Accept': 'application/json'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                msg.innerHTML = "Message sent successfully!";
+                msg.style.color = "#61b752";
+                form.reset();
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'Submit';
+                
+                setTimeout(() => {
+                    msg.innerHTML = "";
+                }, 5000);
+            })
+            .catch(error => {
+                msg.innerHTML = "Error sending message. Please try again.";
+                msg.style.color = "#ff0000";
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = 'Submit';
+                console.error('Error:', error);
+            });
+        });
+    }
+});
