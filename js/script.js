@@ -267,9 +267,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const categoryButtons = document.querySelectorAll('.category-btn');
     const projects = document.querySelectorAll('.work');
 
-    // Show initial category (Robotics)
+    // Show initial category (kinetic)
     projects.forEach(project => {
-        if (project.getAttribute('data-category') === 'robotics') {
+        if (project.getAttribute('data-category') === 'kinetic') {
             project.style.display = 'block';
         } else {
             project.style.display = 'none';
@@ -338,9 +338,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const categoryButtons = document.querySelectorAll('.category-btn');
     const projects = document.querySelectorAll('.work');
 
-    // Show initial category (Robotics)
+    // Show initial category (kinetic)
     projects.forEach(project => {
-        if (project.getAttribute('data-category') === 'robotics') {
+        if (project.getAttribute('data-category') === 'kinetic') {
             project.style.display = 'block';
         } else {
             project.style.display = 'none';
@@ -425,9 +425,9 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Initialize with first category (Robotics)
+    // Initialize with first category (kinetic)
     categoryButtons[0].classList.add('active');
-    showLimitedProjects('robotics');
+    showLimitedProjects('kinetic');
 
     // Category filtering
     categoryButtons.forEach(button => {
