@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Financial Tracker - Cloud Sync</title>
+    <title>Financial Tracker - Multi-Currency</title>
     <style>
         * {
             margin: 0;
@@ -60,6 +60,19 @@
             cursor: pointer;
         }
 
+        .export-btn {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
         .auth-container {
             display: flex;
             align-items: center;
@@ -87,16 +100,19 @@
             display: flex;
             background: #f5f5f5;
             border-bottom: 2px solid #ddd;
+            overflow-x: auto;
         }
 
         .tab-btn {
             flex: 1;
-            padding: 15px;
+            padding: 15px 10px;
             background: none;
             border: none;
-            font-size: 16px;
+            font-size: 14px;
             cursor: pointer;
             transition: all 0.3s;
+            white-space: nowrap;
+            min-width: 80px;
         }
 
         .tab-btn.active {
@@ -126,6 +142,32 @@
         .dashboard-card h3 {
             font-size: 18px;
             margin-bottom: 10px;
+        }
+
+        .currency-section {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 20px;
+            border-left: 5px solid #4CAF50;
+        }
+
+        .currency-section.aed {
+            border-left-color: #2196F3;
+        }
+
+        .currency-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .currency-flag {
+            font-size: 24px;
         }
 
         .reminder-item, .person-item {
@@ -181,6 +223,15 @@
             border-radius: 10px;
             display: inline-block;
             margin-right: 8px;
+        }
+
+        .currency-badge {
+            font-size: 10px;
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 2px 6px;
+            border-radius: 10px;
+            margin-left: 5px;
         }
 
         .btn {
@@ -427,14 +478,37 @@
             margin-top: 2px;
         }
 
+        .currency-filter {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            justify-content: center;
+        }
+
+        .currency-filter-btn {
+            padding: 8px 16px;
+            border: 2px solid #ddd;
+            background: white;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s;
+        }
+
+        .currency-filter-btn.active {
+            border-color: #4CAF50;
+            background: #4CAF50;
+            color: white;
+        }
+
         @media (max-width: 480px) {
             .container {
                 margin: 0;
             }
             
             .tab-btn {
-                font-size: 14px;
-                padding: 12px;
+                font-size: 12px;
+                padding: 12px 8px;
             }
             
             .modal-content {
@@ -444,6 +518,19 @@
 
             .form-row {
                 flex-direction: column;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .export-btn, .logout-btn {
+                position: relative;
+                top: 0;
+                left: 0;
+                right: 0;
+                margin: 5px;
+                display: block;
             }
         }
     </style>
@@ -506,9 +593,10 @@
     <!-- Main Application -->
     <div id="mainApp" class="container hidden">
         <div class="header">
+            <button class="export-btn" onclick="exportAllData()">📥 Export</button>
             <button class="logout-btn" onclick="logoutUser()">Logout</button>
             <h1>💰 Financial Tracker</h1>
-            <p>Manage your money smartly</p>
+            <p>Multi-Currency Money Management</p>
             <div class="user-info" id="userInfo"></div>
             <div class="sync-status" id="syncStatus">Synced to cloud</div>
         </div>
@@ -516,7 +604,8 @@
         <div class="tab-buttons">
             <button class="tab-btn active" onclick="showTab('dashboard')">📊 Dashboard</button>
             <button class="tab-btn" onclick="showTab('lending')">👥 Lending</button>
-            <button class="tab-btn" onclick="showTab('bills')">💳 Bills</button>
+            <button class="tab-btn" onclick="showTab('borrowed')">💳 Borrowed</button>
+            <button class="tab-btn" onclick="showTab('bills')">📅 Bills</button>
         </div>
 
         <!-- Dashboard Tab -->
@@ -526,22 +615,55 @@
                 <div id="todayReminders">No reminders for today</div>
             </div>
 
-            <div class="stats-grid">
-                <div class="stat-card">
-                    <div class="stat-number" id="totalOwed">$0</div>
-                    <div class="stat-label">People Owe You</div>
+            <!-- INR Currency Section -->
+            <div class="currency-section inr">
+                <div class="currency-title">
+                    <span class="currency-flag">🇮🇳</span>
+                    <span>Indian Rupee (INR)</span>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-number" id="totalBills">$0</div>
-                    <div class="stat-label">Monthly Bills</div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalOwedINR">₹0</div>
+                        <div class="stat-label">People Owe You</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalBillsINR">₹0</div>
+                        <div class="stat-label">Monthly Bills</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalYouOweINR">₹0</div>
+                        <div class="stat-label">You Owe Others</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="overdueCountINR">0</div>
+                        <div class="stat-label">Overdue Returns</div>
+                    </div>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-number" id="totalYouOwe">$0</div>
-                    <div class="stat-label">You Owe Others</div>
+            </div>
+
+            <!-- AED Currency Section -->
+            <div class="currency-section aed">
+                <div class="currency-title">
+                    <span class="currency-flag">🇦🇪</span>
+                    <span>UAE Dirham (AED)</span>
                 </div>
-                <div class="stat-card">
-                    <div class="stat-number" id="overdueCount">0</div>
-                    <div class="stat-label">Overdue Returns</div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalOwedAED">د.إ0</div>
+                        <div class="stat-label">People Owe You</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalBillsAED">د.إ0</div>
+                        <div class="stat-label">Monthly Bills</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalYouOweAED">د.إ0</div>
+                        <div class="stat-label">You Owe Others</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="overdueCountAED">0</div>
+                        <div class="stat-label">Overdue Returns</div>
+                    </div>
                 </div>
             </div>
 
@@ -556,15 +678,33 @@
         <!-- Lending Tab -->
         <div id="lending" class="tab-content">
             <h3>💰 People Who Owe You</h3>
+            <div class="currency-filter">
+                <button class="currency-filter-btn active" onclick="filterCurrency('all', 'lending')">All</button>
+                <button class="currency-filter-btn" onclick="filterCurrency('INR', 'lending')">🇮🇳 INR</button>
+                <button class="currency-filter-btn" onclick="filterCurrency('AED', 'lending')">🇦🇪 AED</button>
+            </div>
             <div id="lendingList"></div>
+        </div>
 
-            <h3 style="margin-top: 30px;">💳 You Owe Others</h3>
+        <!-- Borrowed Tab -->
+        <div id="borrowed" class="tab-content">
+            <h3>💳 Money You've Borrowed</h3>
+            <div class="currency-filter">
+                <button class="currency-filter-btn active" onclick="filterCurrency('all', 'borrowing')">All</button>
+                <button class="currency-filter-btn" onclick="filterCurrency('INR', 'borrowing')">🇮🇳 INR</button>
+                <button class="currency-filter-btn" onclick="filterCurrency('AED', 'borrowing')">🇦🇪 AED</button>
+            </div>
             <div id="borrowingList"></div>
         </div>
 
         <!-- Bills Tab -->
         <div id="bills" class="tab-content">
             <h3>📅 Monthly Bills & Reminders</h3>
+            <div class="currency-filter">
+                <button class="currency-filter-btn active" onclick="filterCurrency('all', 'bills')">All</button>
+                <button class="currency-filter-btn" onclick="filterCurrency('INR', 'bills')">🇮🇳 INR</button>
+                <button class="currency-filter-btn" onclick="filterCurrency('AED', 'bills')">🇦🇪 AED</button>
+            </div>
             <div id="billsList"></div>
         </div>
 
@@ -668,17 +808,89 @@
             lending: [],
             borrowing: [],
             bills: [],
-            activity: []
+            activity: [],
+            deletedItems: []
         };
         let currentPaymentItem = null;
         let currentPaymentType = null;
         let selectedPersonId = null;
         let unsubscribers = [];
+        let currentCurrencyFilter = {
+            lending: 'all',
+            borrowing: 'all',
+            bills: 'all'
+        };
 
         // Make Firebase functions available globally
         window.db = db;
         window.auth = auth;
         window.currentUser = currentUser;
+
+        // Currency utilities
+        function getCurrencySymbol(currency) {
+            return currency === 'INR' ? '₹' : 'د.إ';
+        }
+
+        function formatAmount(amount, currency) {
+            const symbol = getCurrencySymbol(currency);
+            return `${symbol}${amount.toFixed(0)}`;
+        }
+
+        // ========================================
+        // EXPORT FUNCTIONALITY
+        // ========================================
+
+        window.exportAllData = async function() {
+            if (!currentUser) return;
+
+            try {
+                document.getElementById('syncStatus').textContent = 'Exporting...';
+
+                // Load deleted items
+                const deletedSnapshot = await getDocs(collection(db, 'users', currentUser.uid, 'deleted_items'));
+                const deletedItems = deletedSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+                const exportData = {
+                    exportDate: new Date().toISOString(),
+                    userEmail: currentUser.email,
+                    activeData: {
+                        lending: data.lending,
+                        borrowing: data.borrowing,
+                        bills: data.bills,
+                        activity: data.activity
+                    },
+                    deletedData: deletedItems,
+                    summary: {
+                        totalActiveLending: data.lending.length,
+                        totalActiveBorrowing: data.borrowing.length,
+                        totalActiveBills: data.bills.length,
+                        totalDeletedItems: deletedItems.length,
+                        totalActivity: data.activity.length
+                    }
+                };
+
+                // Create and download file
+                const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `financial-tracker-export-${new Date().toISOString().split('T')[0]}.json`;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+
+                document.getElementById('syncStatus').textContent = 'Export completed';
+                setTimeout(() => {
+                    document.getElementById('syncStatus').textContent = 'Synced to cloud';
+                }, 2000);
+
+            } catch (error) {
+                console.error('Error exporting data:', error);
+                alert('Error exporting data. Please try again.');
+                document.getElementById('syncStatus').textContent = 'Export error';
+            }
+        }
 
         // ========================================
         // AUTHENTICATION FUNCTIONS
@@ -792,17 +1004,19 @@
                 document.getElementById('syncStatus').textContent = 'Loading...';
 
                 // Load all collections
-                const [lendingSnapshot, borrowingSnapshot, billsSnapshot, activitySnapshot] = await Promise.all([
+                const [lendingSnapshot, borrowingSnapshot, billsSnapshot, activitySnapshot, deletedSnapshot] = await Promise.all([
                     getDocs(collection(db, 'users', currentUser.uid, 'lending')),
                     getDocs(collection(db, 'users', currentUser.uid, 'borrowing')),
                     getDocs(collection(db, 'users', currentUser.uid, 'bills')),
-                    getDocs(query(collection(db, 'users', currentUser.uid, 'activity'), orderBy('date', 'desc')))
+                    getDocs(query(collection(db, 'users', currentUser.uid, 'activity'), orderBy('date', 'desc'))),
+                    getDocs(collection(db, 'users', currentUser.uid, 'deleted_items'))
                 ]);
 
                 data.lending = lendingSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 data.borrowing = borrowingSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 data.bills = billsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
                 data.activity = activitySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                data.deletedItems = deletedSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 
                 updateAllTabs();
                 document.getElementById('syncStatus').textContent = 'Synced to cloud';
@@ -865,10 +1079,20 @@
             }
         }
 
-        async function deleteFromFirestore(collectionName, docId) {
+        async function deleteFromFirestore(collectionName, docId, itemData = null) {
             if (!currentUser) return;
 
             try {
+                // Save to deleted_items before deleting
+                if (itemData) {
+                    await addDoc(collection(db, 'users', currentUser.uid, 'deleted_items'), {
+                        ...itemData,
+                        originalCollection: collectionName,
+                        deletedAt: new Date().toISOString(),
+                        originalId: docId
+                    });
+                }
+
                 await deleteDoc(doc(db, 'users', currentUser.uid, collectionName, docId));
             } catch (error) {
                 console.error('Error deleting from Firestore:', error);
@@ -877,7 +1101,7 @@
         }
 
         // ========================================
-        // UI FUNCTIONS (Same as original, adapted for Firebase)
+        // UI FUNCTIONS
         // ========================================
         
         window.showTab = function(tabName) {
@@ -893,7 +1117,22 @@
 
             if (tabName === 'dashboard') updateDashboard();
             else if (tabName === 'lending') updateLendingList();
+            else if (tabName === 'borrowed') updateBorrowingList();
             else if (tabName === 'bills') updateBillsList();
+        }
+
+        window.filterCurrency = function(currency, section) {
+            currentCurrencyFilter[section] = currency;
+            
+            // Update filter buttons
+            const buttons = event.target.parentElement.children;
+            Array.from(buttons).forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            
+            // Update the list
+            if (section === 'lending') updateLendingList();
+            else if (section === 'borrowing') updateBorrowingList();
+            else if (section === 'bills') updateBillsList();
         }
 
         window.showAddModal = function() {
@@ -919,11 +1158,13 @@
             document.getElementById('paymentNote').value = '';
             
             if (type === 'lending' || type === 'borrowing') {
+                const symbol = getCurrencySymbol(item.currency);
                 document.getElementById('paymentInfo').innerHTML = `
-                    <strong>Current Balance:</strong> $${item.balance.toFixed(2)}<br>
+                    <strong>Current Balance:</strong> ${symbol}${item.balance.toFixed(2)}<br>
                     <strong>Person ID:</strong> ${item.personId}<br>
-                    <strong>Total Lent:</strong> $${item.totalLent.toFixed(2)}<br>
-                    <strong>Total Returned:</strong> $${item.totalReturned.toFixed(2)}
+                    <strong>Total Lent:</strong> ${symbol}${item.totalLent.toFixed(2)}<br>
+                    <strong>Total Returned:</strong> ${symbol}${item.totalReturned.toFixed(2)}<br>
+                    <strong>Currency:</strong> ${item.currency}
                 `;
             }
             
@@ -937,15 +1178,17 @@
         }
 
         window.showPersonModal = function(person, type) {
+            const symbol = getCurrencySymbol(person.currency);
             document.getElementById('personModalTitle').textContent = `${person.name} (ID: ${person.personId})`;
             
             const details = document.getElementById('personDetails');
             details.innerHTML = `
                 <div style="margin-bottom: 15px;">
                     <strong>Person ID:</strong> ${person.personId}<br>
-                    <strong>Current Balance:</strong> $${person.balance.toFixed(2)}<br>
-                    <strong>Total Lent:</strong> $${person.totalLent.toFixed(2)}<br>
-                    <strong>Total Returned:</strong> $${person.totalReturned.toFixed(2)}<br>
+                    <strong>Currency:</strong> ${person.currency}<br>
+                    <strong>Current Balance:</strong> ${symbol}${person.balance.toFixed(2)}<br>
+                    <strong>Total Lent:</strong> ${symbol}${person.totalLent.toFixed(2)}<br>
+                    <strong>Total Returned:</strong> ${symbol}${person.totalReturned.toFixed(2)}<br>
                     ${person.expectedReturn ? `<strong>Expected Return:</strong> ${new Date(person.expectedReturn).toLocaleDateString()}<br>` : ''}
                 </div>
                 
@@ -953,7 +1196,7 @@
                 <div class="transaction-history">
                     ${person.transactions.map(t => `
                         <div class="transaction-item">
-                            <strong>${t.type === 'loan' ? '💰 Loan' : '💵 Payment'}:</strong> $${t.amount.toFixed(2)}<br>
+                            <strong>${t.type === 'loan' ? '💰 Loan' : '💵 Payment'}:</strong> ${symbol}${t.amount.toFixed(2)}<br>
                             <small>${new Date(t.date).toLocaleDateString()} ${t.purpose ? '- ' + t.purpose : ''} ${t.note ? '- ' + t.note : ''}</small>
                         </div>
                     `).join('')}
@@ -976,6 +1219,14 @@
                 
                 form.innerHTML = `
                     <div class="form-group">
+                        <label>Currency:</label>
+                        <select id="currency">
+                            <option value="INR">🇮🇳 Indian Rupee (INR)</option>
+                            <option value="AED">🇦🇪 UAE Dirham (AED)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
                         <label>Select Person:</label>
                         <div class="person-selector">
                             <div class="person-option new selected" onclick="selectPersonOption('new')">
@@ -994,7 +1245,7 @@
                         <select id="existingPerson" onchange="onExistingPersonSelect()">
                             <option value="">Select a person...</option>
                             ${existingPeople.map(p => `
-                                <option value="${p.personId}">${p.name} (ID: ${p.personId}) - Balance: $${p.balance.toFixed(2)}</option>
+                                <option value="${p.personId}">${p.name} (ID: ${p.personId}) - ${formatAmount(p.balance, p.currency)}</option>
                             `).join('')}
                         </select>
                     </div>
@@ -1024,6 +1275,14 @@
                 `;
             } else {
                 form.innerHTML = `
+                    <div class="form-group">
+                        <label>Currency:</label>
+                        <select id="currency">
+                            <option value="INR">🇮🇳 Indian Rupee (INR)</option>
+                            <option value="AED">🇦🇪 UAE Dirham (AED)</option>
+                        </select>
+                    </div>
+                    
                     <div class="form-group">
                         <label>Bill Name:</label>
                         <input type="text" id="billName" placeholder="e.g., Credit Card, Netflix">
@@ -1076,6 +1335,7 @@
 
         window.addItem = async function() {
             const type = document.getElementById('itemType').value;
+            const currency = document.getElementById('currency').value;
             const addBtn = document.getElementById('addItemBtn');
             
             addBtn.disabled = true;
@@ -1137,6 +1397,7 @@
                             balance: amount,
                             totalLent: amount,
                             totalReturned: 0,
+                            currency: currency,
                             expectedReturn: expectedReturn || null,
                             transactions: [{
                                 date: new Date().toISOString(),
@@ -1152,8 +1413,9 @@
                     await saveToFirestore('activity', {
                         date: new Date().toISOString(),
                         type: type,
-                        description: `${type === 'lending' ? 'Lent' : 'Borrowed'} $${amount} ${type === 'lending' ? 'to' : 'from'} ${name} (ID: ${personId})`,
-                        amount: amount
+                        description: `${type === 'lending' ? 'Lent' : 'Borrowed'} ${formatAmount(amount, currency)} ${type === 'lending' ? 'to' : 'from'} ${name} (ID: ${personId})`,
+                        amount: amount,
+                        currency: currency
                     });
 
                 } else {
@@ -1171,6 +1433,7 @@
                     await saveToFirestore('bills', {
                         name: name,
                         amount: amount,
+                        currency: currency,
                         dueDate: dueDate,
                         category: category,
                         paid: false,
@@ -1180,8 +1443,9 @@
                     await saveToFirestore('activity', {
                         date: new Date().toISOString(),
                         type: 'bill',
-                        description: `Added bill: ${name} - $${amount}`,
-                        amount: amount
+                        description: `Added bill: ${name} - ${formatAmount(amount, currency)}`,
+                        amount: amount,
+                        currency: currency
                     });
                 }
 
@@ -1219,7 +1483,7 @@
             try {
                 if (currentPaymentType === 'lending' || currentPaymentType === 'borrowing') {
                     if (amount > currentPaymentItem.balance) {
-                        alert(`Payment amount ($${amount}) cannot be more than balance ($${currentPaymentItem.balance.toFixed(2)})`);
+                        alert(`Payment amount (${formatAmount(amount, currentPaymentItem.currency)}) cannot be more than balance (${formatAmount(currentPaymentItem.balance, currentPaymentItem.currency)})`);
                         return;
                     }
 
@@ -1236,8 +1500,17 @@
                     ];
 
                     if (newBalance <= 0) {
-                        // Delete the person if fully paid
-                        await deleteFromFirestore(currentPaymentType, currentPaymentItem.id);
+                        // Delete the person if fully paid but save to deleted_items first
+                        await deleteFromFirestore(currentPaymentType, currentPaymentItem.id, {
+                            ...currentPaymentItem,
+                            finalPayment: {
+                                date: paymentDate,
+                                amount: amount,
+                                note: note
+                            },
+                            finalBalance: newBalance,
+                            finalTotalReturned: newTotalReturned
+                        });
                     } else {
                         // Update the person
                         await saveToFirestore(currentPaymentType, {
@@ -1250,8 +1523,9 @@
                     await saveToFirestore('activity', {
                         date: new Date().toISOString(),
                         type: currentPaymentType,
-                        description: `${currentPaymentType === 'lending' ? 'Received' : 'Made'} $${amount} payment ${currentPaymentType === 'lending' ? 'from' : 'to'} ${currentPaymentItem.name} (ID: ${currentPaymentItem.personId})`,
-                        amount: amount
+                        description: `${currentPaymentType === 'lending' ? 'Received' : 'Made'} ${formatAmount(amount, currentPaymentItem.currency)} payment ${currentPaymentType === 'lending' ? 'from' : 'to'} ${currentPaymentItem.name} (ID: ${currentPaymentItem.personId})`,
+                        amount: amount,
+                        currency: currentPaymentItem.currency
                     });
 
                 } else if (currentPaymentType === 'bills') {
@@ -1263,8 +1537,9 @@
                     await saveToFirestore('activity', {
                         date: new Date().toISOString(),
                         type: 'bill',
-                        description: `Paid ${currentPaymentItem.name} - $${currentPaymentItem.amount}`,
-                        amount: currentPaymentItem.amount
+                        description: `Paid ${currentPaymentItem.name} - ${formatAmount(currentPaymentItem.amount, currentPaymentItem.currency)}`,
+                        amount: currentPaymentItem.amount,
+                        currency: currentPaymentItem.currency
                     });
                 }
 
@@ -1281,20 +1556,35 @@
         }
 
         function updateDashboard() {
-            const totalOwed = data.lending.reduce((sum, item) => sum + item.balance, 0);
-            const totalYouOwe = data.borrowing.reduce((sum, item) => sum + item.balance, 0);
-            const totalBills = data.bills.filter(bill => !bill.paid).reduce((sum, bill) => sum + bill.amount, 0);
-            
+            // Calculate totals by currency
+            const totalsINR = {
+                owed: data.lending.filter(item => item.currency === 'INR').reduce((sum, item) => sum + item.balance, 0),
+                youOwe: data.borrowing.filter(item => item.currency === 'INR').reduce((sum, item) => sum + item.balance, 0),
+                bills: data.bills.filter(bill => !bill.paid && bill.currency === 'INR').reduce((sum, bill) => sum + bill.amount, 0),
+                overdue: data.lending.filter(item => item.currency === 'INR' && item.expectedReturn && new Date(item.expectedReturn) < new Date()).length
+            };
+
+            const totalsAED = {
+                owed: data.lending.filter(item => item.currency === 'AED').reduce((sum, item) => sum + item.balance, 0),
+                youOwe: data.borrowing.filter(item => item.currency === 'AED').reduce((sum, item) => sum + item.balance, 0),
+                bills: data.bills.filter(bill => !bill.paid && bill.currency === 'AED').reduce((sum, bill) => sum + bill.amount, 0),
+                overdue: data.lending.filter(item => item.currency === 'AED' && item.expectedReturn && new Date(item.expectedReturn) < new Date()).length
+            };
+
+            // Update INR section
+            document.getElementById('totalOwedINR').textContent = `₹${totalsINR.owed.toFixed(0)}`;
+            document.getElementById('totalYouOweINR').textContent = `₹${totalsINR.youOwe.toFixed(0)}`;
+            document.getElementById('totalBillsINR').textContent = `₹${totalsINR.bills.toFixed(0)}`;
+            document.getElementById('overdueCountINR').textContent = totalsINR.overdue;
+
+            // Update AED section
+            document.getElementById('totalOwedAED').textContent = `د.إ${totalsAED.owed.toFixed(0)}`;
+            document.getElementById('totalYouOweAED').textContent = `د.إ${totalsAED.youOwe.toFixed(0)}`;
+            document.getElementById('totalBillsAED').textContent = `د.إ${totalsAED.bills.toFixed(0)}`;
+            document.getElementById('overdueCountAED').textContent = totalsAED.overdue;
+
+            // Update reminders
             const today = new Date();
-            const overdueCount = data.lending.filter(item => 
-                item.expectedReturn && new Date(item.expectedReturn) < today
-            ).length;
-
-            document.getElementById('totalOwed').textContent = `$${totalOwed.toFixed(0)}`;
-            document.getElementById('totalYouOwe').textContent = `$${totalYouOwe.toFixed(0)}`;
-            document.getElementById('totalBills').textContent = `$${totalBills.toFixed(0)}`;
-            document.getElementById('overdueCount').textContent = overdueCount;
-
             const todayStr = today.toISOString().split('T')[0];
             const upcomingBills = data.bills.filter(bill => !bill.paid && bill.dueDate <= todayStr);
             const overdueReturns = data.lending.filter(item => 
@@ -1305,12 +1595,12 @@
             const allReminders = [
                 ...upcomingBills.map(bill => ({
                     type: 'bill',
-                    text: `${bill.name} - $${bill.amount}`,
+                    text: `${bill.name} - ${formatAmount(bill.amount, bill.currency)}`,
                     subtext: `Due: ${new Date(bill.dueDate).toLocaleDateString()}`
                 })),
                 ...overdueReturns.map(person => ({
                     type: 'overdue',
-                    text: `${person.name} (ID: ${person.personId}) - $${person.balance.toFixed(2)}`,
+                    text: `${person.name} (ID: ${person.personId}) - ${formatAmount(person.balance, person.currency)}`,
                     subtext: `Expected: ${new Date(person.expectedReturn).toLocaleDateString()}`
                 }))
             ];
@@ -1326,6 +1616,7 @@
                 `).join('');
             }
 
+            // Update recent activity
             const activityContainer = document.getElementById('recentActivity');
             if (data.activity.length === 0) {
                 activityContainer.innerHTML = '<div class="no-data"><p>No recent activity</p></div>';
@@ -1334,7 +1625,7 @@
                     <div class="reminder-item">
                         <div class="item-header">
                             <span class="item-name">${activity.description}</span>
-                            <span class="item-amount">$${activity.amount}</span>
+                            <span class="item-amount">${formatAmount(activity.amount, activity.currency)}</span>
                         </div>
                         <div class="item-details">${new Date(activity.date).toLocaleDateString()}</div>
                     </div>
@@ -1344,25 +1635,32 @@
 
         function updateLendingList() {
             const lendingContainer = document.getElementById('lendingList');
-            const borrowingContainer = document.getElementById('borrowingList');
             const today = new Date();
 
-            if (data.lending.length === 0) {
-                lendingContainer.innerHTML = '<div class="no-data"><p>No one owes you money</p></div>';
+            // Filter lending data
+            let filteredLending = data.lending;
+            if (currentCurrencyFilter.lending !== 'all') {
+                filteredLending = data.lending.filter(item => item.currency === currentCurrencyFilter.lending);
+            }
+
+            if (filteredLending.length === 0) {
+                lendingContainer.innerHTML = '<div class="no-data"><p>No lending records found</p></div>';
             } else {
-                lendingContainer.innerHTML = data.lending.map(person => {
+                lendingContainer.innerHTML = filteredLending.map(person => {
                     const isOverdue = person.expectedReturn && new Date(person.expectedReturn) < today;
+                    const symbol = getCurrencySymbol(person.currency);
                     return `
                         <div class="person-item ${isOverdue ? 'overdue' : ''}">
                             <div class="item-header">
                                 <div>
                                     <span class="person-id">ID: ${person.personId}</span>
+                                    <span class="currency-badge">${person.currency}</span>
                                     <span class="item-name">${person.name}</span>
                                 </div>
-                                <span class="item-amount">$${person.balance.toFixed(2)}</span>
+                                <span class="item-amount">${symbol}${person.balance.toFixed(2)}</span>
                             </div>
                             <div class="item-details">
-                                Total Lent: $${person.totalLent.toFixed(2)} | Returned: $${person.totalReturned.toFixed(2)}<br>
+                                Total Lent: ${symbol}${person.totalLent.toFixed(2)} | Returned: ${symbol}${person.totalReturned.toFixed(2)}<br>
                                 ${person.expectedReturn ? 
                                     `Expected Return: ${new Date(person.expectedReturn).toLocaleDateString()} ${isOverdue ? '⚠️ OVERDUE' : ''}` : 
                                     'No return date set'
@@ -1377,23 +1675,36 @@
                     `;
                 }).join('');
             }
+        }
 
-            if (data.borrowing.length === 0) {
-                borrowingContainer.innerHTML = '<div class="no-data"><p>You don\'t owe anyone money</p></div>';
+        function updateBorrowingList() {
+            const borrowingContainer = document.getElementById('borrowingList');
+            const today = new Date();
+
+            // Filter borrowing data
+            let filteredBorrowing = data.borrowing;
+            if (currentCurrencyFilter.borrowing !== 'all') {
+                filteredBorrowing = data.borrowing.filter(item => item.currency === currentCurrencyFilter.borrowing);
+            }
+
+            if (filteredBorrowing.length === 0) {
+                borrowingContainer.innerHTML = '<div class="no-data"><p>No borrowing records found</p></div>';
             } else {
-                borrowingContainer.innerHTML = data.borrowing.map(person => {
+                borrowingContainer.innerHTML = filteredBorrowing.map(person => {
                     const isOverdue = person.expectedReturn && new Date(person.expectedReturn) < today;
+                    const symbol = getCurrencySymbol(person.currency);
                     return `
                         <div class="person-item ${isOverdue ? 'overdue' : ''}">
                             <div class="item-header">
                                 <div>
                                     <span class="person-id">ID: ${person.personId}</span>
+                                    <span class="currency-badge">${person.currency}</span>
                                     <span class="item-name">${person.name}</span>
                                 </div>
-                                <span class="item-amount">$${person.balance.toFixed(2)}</span>
+                                <span class="item-amount">${symbol}${person.balance.toFixed(2)}</span>
                             </div>
                             <div class="item-details">
-                                Total Borrowed: $${person.totalLent.toFixed(2)} | Paid Back: $${person.totalReturned.toFixed(2)}<br>
+                                Total Borrowed: ${symbol}${person.totalLent.toFixed(2)} | Paid Back: ${symbol}${person.totalReturned.toFixed(2)}<br>
                                 ${person.expectedReturn ? 
                                     `Expected Payment: ${new Date(person.expectedReturn).toLocaleDateString()} ${isOverdue ? '⚠️ OVERDUE' : ''}` : 
                                     'No payment date set'
@@ -1413,17 +1724,23 @@
         function updateBillsList() {
             const billsContainer = document.getElementById('billsList');
             
-            if (data.bills.length === 0) {
-                billsContainer.innerHTML = '<div class="no-data"><p>No bills added yet</p></div>';
+            let filteredBills = data.bills.filter(bill => !bill.paid);
+            if (currentCurrencyFilter.bills !== 'all') {
+                filteredBills = filteredBills.filter(item => item.currency === currentCurrencyFilter.bills);
+            }
+
+            if (filteredBills.length === 0) {
+                billsContainer.innerHTML = '<div class="no-data"><p>No bills found</p></div>';
                 return;
             }
 
             const today = new Date();
-            const sortedBills = data.bills.filter(bill => !bill.paid).sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
+            const sortedBills = filteredBills.sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
 
             billsContainer.innerHTML = sortedBills.map(bill => {
                 const dueDate = new Date(bill.dueDate);
                 const daysDiff = Math.ceil((dueDate - today) / (1000 * 60 * 60 * 24));
+                const symbol = getCurrencySymbol(bill.currency);
                 
                 let statusClass = '';
                 let statusText = '';
@@ -1441,8 +1758,11 @@
                 return `
                     <div class="reminder-item ${statusClass}">
                         <div class="item-header">
-                            <span class="item-name">${bill.name}</span>
-                            <span class="item-amount">$${bill.amount}</span>
+                            <div>
+                                <span class="currency-badge">${bill.currency}</span>
+                                <span class="item-name">${bill.name}</span>
+                            </div>
+                            <span class="item-amount">${symbol}${bill.amount}</span>
                         </div>
                         <div class="item-details">
                             ${statusText} • ${dueDate.toLocaleDateString()}
@@ -1459,6 +1779,7 @@
         function updateAllTabs() {
             updateDashboard();
             updateLendingList();
+            updateBorrowingList();
             updateBillsList();
         }
 
@@ -1466,7 +1787,8 @@
         window.deletePerson = async function(id, type) {
             if (confirm('Are you sure you want to delete this person and all their transaction history?')) {
                 try {
-                    await deleteFromFirestore(type, id);
+                    const person = data[type].find(p => p.id === id);
+                    await deleteFromFirestore(type, id, person);
                     document.getElementById('syncStatus').textContent = 'Synced to cloud';
                 } catch (error) {
                     console.error('Error deleting person:', error);
@@ -1479,7 +1801,8 @@
         window.deleteBill = async function(id) {
             if (confirm('Are you sure you want to delete this bill?')) {
                 try {
-                    await deleteFromFirestore('bills', id);
+                    const bill = data.bills.find(b => b.id === id);
+                    await deleteFromFirestore('bills', id, bill);
                     document.getElementById('syncStatus').textContent = 'Synced to cloud';
                 } catch (error) {
                     console.error('Error deleting bill:', error);
@@ -1515,7 +1838,7 @@
                 document.getElementById('mainApp').classList.add('hidden');
                 
                 // Clear data
-                data = { lending: [], borrowing: [], bills: [], activity: [] };
+                data = { lending: [], borrowing: [], bills: [], activity: [], deletedItems: [] };
             }
         });
 
@@ -1536,7 +1859,7 @@
             }
         }
 
-        console.log('Firebase Financial Tracker initialized');
+        console.log('Multi-Currency Firebase Financial Tracker with Export initialized');
     </script>
 </body>
 </html>
