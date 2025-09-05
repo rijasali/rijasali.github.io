@@ -1,0 +1,1542 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial Tracker - Cloud Sync</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 500px;
+            margin: 0 auto;
+            background: white;
+            min-height: 100vh;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .user-info {
+            font-size: 12px;
+            opacity: 0.9;
+            margin-top: 5px;
+        }
+
+        .logout-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .auth-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .auth-form {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        .auth-form h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #4CAF50;
+        }
+
+        .tab-buttons {
+            display: flex;
+            background: #f5f5f5;
+            border-bottom: 2px solid #ddd;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 15px;
+            background: none;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .tab-btn.active {
+            background: #4CAF50;
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 20px;
+            min-height: calc(100vh - 120px);
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        .dashboard-card {
+            background: linear-gradient(135deg, #ff6b6b, #ee5a24);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .dashboard-card h3 {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .reminder-item, .person-item {
+            background: white;
+            padding: 15px;
+            margin-bottom: 10px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            border-left: 4px solid #4CAF50;
+        }
+
+        .reminder-item.due-soon {
+            border-left-color: #ff9800;
+        }
+
+        .reminder-item.overdue {
+            border-left-color: #f44336;
+        }
+
+        .person-item.overdue {
+            border-left-color: #f44336;
+        }
+
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .item-name {
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .item-amount {
+            font-size: 18px;
+            font-weight: bold;
+            color: #4CAF50;
+        }
+
+        .item-details {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 8px;
+        }
+
+        .person-id {
+            font-size: 12px;
+            color: #999;
+            background: #f0f0f0;
+            padding: 2px 6px;
+            border-radius: 10px;
+            display: inline-block;
+            margin-right: 8px;
+        }
+
+        .btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-size: 16px;
+            cursor: pointer;
+            margin: 5px;
+            transition: all 0.3s;
+            min-width: 120px;
+        }
+
+        .btn:hover {
+            background: #45a049;
+            transform: translateY(-2px);
+        }
+
+        .btn:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background: #2196F3;
+        }
+
+        .btn-danger {
+            background: #f44336;
+        }
+
+        .btn-warning {
+            background: #ff9800;
+        }
+
+        .btn-small {
+            padding: 8px 15px;
+            font-size: 14px;
+            min-width: 80px;
+        }
+
+        .add-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            transition: all 0.3s;
+        }
+
+        .add-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            margin: 20px auto;
+            padding: 20px;
+            width: 90%;
+            max-width: 400px;
+            border-radius: 15px;
+            position: relative;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .close {
+            position: absolute;
+            top: 10px;
+            right: 15px;
+            font-size: 28px;
+            cursor: pointer;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+        }
+
+        .form-group input:focus, .form-group select:focus {
+            border-color: #4CAF50;
+            outline: none;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .no-data {
+            text-align: center;
+            color: #666;
+            padding: 40px 20px;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .stat-number {
+            font-size: 24px;
+            font-weight: bold;
+            color: #4CAF50;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+
+        .transaction-history {
+            background: #f9f9f9;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+        .transaction-item {
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+            font-size: 13px;
+        }
+
+        .transaction-item:last-child {
+            border-bottom: none;
+        }
+
+        .person-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        .person-option {
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            cursor: pointer;
+            text-align: center;
+            flex: 1;
+            transition: all 0.3s;
+        }
+
+        .person-option.selected {
+            border-color: #4CAF50;
+            background: #e8f5e8;
+        }
+
+        .person-option.new {
+            border-color: #2196F3;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 50px;
+            font-size: 18px;
+            color: #666;
+        }
+
+        .error {
+            background: #ffebee;
+            color: #c62828;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            border-left: 4px solid #f44336;
+        }
+
+        .success {
+            background: #e8f5e8;
+            color: #2e7d32;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 10px 0;
+            border-left: 4px solid #4CAF50;
+        }
+
+        .sync-status {
+            font-size: 10px;
+            opacity: 0.7;
+            margin-top: 2px;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                margin: 0;
+            }
+            
+            .tab-btn {
+                font-size: 14px;
+                padding: 12px;
+            }
+            
+            .modal-content {
+                margin: 10px;
+                width: calc(100% - 20px);
+            }
+
+            .form-row {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Loading Screen -->
+    <div id="loadingScreen" class="loading">
+        Connecting to Firebase...
+    </div>
+
+    <!-- Authentication Container -->
+    <div id="authContainer" class="auth-container hidden">
+        <div class="auth-form">
+            <h2>💰 Financial Tracker</h2>
+            <div id="authTabs">
+                <div class="tab-buttons">
+                    <button class="tab-btn active" onclick="showAuthTab('login')">Login</button>
+                    <button class="tab-btn" onclick="showAuthTab('signup')">Sign Up</button>
+                </div>
+
+                <!-- Login Form -->
+                <div id="loginForm" class="tab-content active" style="display: block; padding: 20px 0;">
+                    <div class="form-group">
+                        <label>Email:</label>
+                        <input type="email" id="loginEmail" placeholder="Enter your email">
+                    </div>
+                    <div class="form-group">
+                        <label>Password:</label>
+                        <input type="password" id="loginPassword" placeholder="Enter your password">
+                    </div>
+                    <div class="action-buttons">
+                        <button class="btn" onclick="loginUser()" id="loginBtn">Login</button>
+                    </div>
+                </div>
+
+                <!-- Signup Form -->
+                <div id="signupForm" class="tab-content" style="padding: 20px 0;">
+                    <div class="form-group">
+                        <label>Email:</label>
+                        <input type="email" id="signupEmail" placeholder="Enter your email">
+                    </div>
+                    <div class="form-group">
+                        <label>Password:</label>
+                        <input type="password" id="signupPassword" placeholder="Create a password (min 6 characters)">
+                    </div>
+                    <div class="form-group">
+                        <label>Confirm Password:</label>
+                        <input type="password" id="confirmPassword" placeholder="Confirm your password">
+                    </div>
+                    <div class="action-buttons">
+                        <button class="btn" onclick="signupUser()" id="signupBtn">Create Account</button>
+                    </div>
+                </div>
+            </div>
+            <div id="authError" class="error hidden"></div>
+            <div id="authSuccess" class="success hidden"></div>
+        </div>
+    </div>
+
+    <!-- Main Application -->
+    <div id="mainApp" class="container hidden">
+        <div class="header">
+            <button class="logout-btn" onclick="logoutUser()">Logout</button>
+            <h1>💰 Financial Tracker</h1>
+            <p>Manage your money smartly</p>
+            <div class="user-info" id="userInfo"></div>
+            <div class="sync-status" id="syncStatus">Synced to cloud</div>
+        </div>
+
+        <div class="tab-buttons">
+            <button class="tab-btn active" onclick="showTab('dashboard')">📊 Dashboard</button>
+            <button class="tab-btn" onclick="showTab('lending')">👥 Lending</button>
+            <button class="tab-btn" onclick="showTab('bills')">💳 Bills</button>
+        </div>
+
+        <!-- Dashboard Tab -->
+        <div id="dashboard" class="tab-content active">
+            <div class="dashboard-card">
+                <h3>🔔 Today's Reminders</h3>
+                <div id="todayReminders">No reminders for today</div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-number" id="totalOwed">$0</div>
+                    <div class="stat-label">People Owe You</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="totalBills">$0</div>
+                    <div class="stat-label">Monthly Bills</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="totalYouOwe">$0</div>
+                    <div class="stat-label">You Owe Others</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number" id="overdueCount">0</div>
+                    <div class="stat-label">Overdue Returns</div>
+                </div>
+            </div>
+
+            <h3>💸 Recent Activity</h3>
+            <div id="recentActivity">
+                <div class="no-data">
+                    <p>No recent activity</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Lending Tab -->
+        <div id="lending" class="tab-content">
+            <h3>💰 People Who Owe You</h3>
+            <div id="lendingList"></div>
+
+            <h3 style="margin-top: 30px;">💳 You Owe Others</h3>
+            <div id="borrowingList"></div>
+        </div>
+
+        <!-- Bills Tab -->
+        <div id="bills" class="tab-content">
+            <h3>📅 Monthly Bills & Reminders</h3>
+            <div id="billsList"></div>
+        </div>
+
+        <!-- Floating Add Button -->
+        <button class="add-btn" onclick="showAddModal()">+</button>
+
+        <!-- Add New Modal -->
+        <div id="addModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closeModal()">&times;</span>
+                <h3>Add New Item</h3>
+                
+                <div class="form-group">
+                    <label>Type:</label>
+                    <select id="itemType" onchange="updateForm()">
+                        <option value="lending">💰 Money Lent</option>
+                        <option value="borrowing">💳 Money Borrowed</option>
+                        <option value="bill">📅 Monthly Bill</option>
+                    </select>
+                </div>
+
+                <div id="dynamicForm"></div>
+
+                <div class="action-buttons">
+                    <button class="btn" onclick="addItem()" id="addItemBtn">Add Item</button>
+                    <button class="btn btn-secondary" onclick="closeModal()">Cancel</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Payment Modal -->
+        <div id="paymentModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closePaymentModal()">&times;</span>
+                <h3 id="paymentTitle">Record Payment</h3>
+                
+                <div class="form-group">
+                    <label>Payment Amount:</label>
+                    <input type="number" id="paymentAmount" placeholder="Enter amount" step="0.01">
+                </div>
+
+                <div class="form-group">
+                    <label>Payment Date:</label>
+                    <input type="date" id="paymentDate">
+                </div>
+
+                <div class="form-group">
+                    <label>Note (Optional):</label>
+                    <input type="text" id="paymentNote" placeholder="Payment note">
+                </div>
+
+                <div id="paymentInfo" class="item-details" style="margin: 15px 0; padding: 10px; background: #f0f0f0; border-radius: 8px;"></div>
+
+                <div class="action-buttons">
+                    <button class="btn" onclick="recordPayment()" id="recordPaymentBtn">Record Payment</button>
+                    <button class="btn btn-secondary" onclick="closePaymentModal()">Cancel</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Person Details Modal -->
+        <div id="personModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="closePersonModal()">&times;</span>
+                <h3 id="personModalTitle">Person Details</h3>
+                
+                <div id="personDetails"></div>
+
+                <div class="action-buttons">
+                    <button class="btn btn-secondary" onclick="closePersonModal()">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK -->
+    <script type="module">
+        // Import Firebase SDK
+        import { initializeApp } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-app.js';
+        import { getFirestore, collection, doc, addDoc, updateDoc, deleteDoc, getDocs, getDoc, onSnapshot, query, orderBy, where } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore.js';
+        import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/9.22.0/firebase-auth.js';
+
+        // Your Firebase configuration
+        const firebaseConfig = {
+        apiKey: "AIzaSyDgbYkEqGiSvBPG6-7AHefMeeOUIl0WTG0",
+        authDomain: "financial-tracker-8be29.firebaseapp.com",
+        projectId: "financial-tracker-8be29",
+        storageBucket: "financial-tracker-8be29.firebasestorage.app",
+        messagingSenderId: "482171018221",
+        appId: "1:482171018221:web:f22ba6b78a9dfa2dd925e4"
+        };
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        const auth = getAuth(app);
+
+        // Global variables
+        let currentUser = null;
+        let data = {
+            lending: [],
+            borrowing: [],
+            bills: [],
+            activity: []
+        };
+        let currentPaymentItem = null;
+        let currentPaymentType = null;
+        let selectedPersonId = null;
+        let unsubscribers = [];
+
+        // Make Firebase functions available globally
+        window.db = db;
+        window.auth = auth;
+        window.currentUser = currentUser;
+
+        // ========================================
+        // AUTHENTICATION FUNCTIONS
+        // ========================================
+        
+        function showError(message, elementId = 'authError') {
+            const errorEl = document.getElementById(elementId);
+            errorEl.textContent = message;
+            errorEl.classList.remove('hidden');
+            setTimeout(() => errorEl.classList.add('hidden'), 5000);
+        }
+
+        function showSuccess(message, elementId = 'authSuccess') {
+            const successEl = document.getElementById(elementId);
+            successEl.textContent = message;
+            successEl.classList.remove('hidden');
+            setTimeout(() => successEl.classList.add('hidden'), 3000);
+        }
+
+        window.showAuthTab = function(tab) {
+            document.querySelectorAll('#authTabs .tab-content').forEach(el => el.style.display = 'none');
+            document.querySelectorAll('#authTabs .tab-btn').forEach(el => el.classList.remove('active'));
+            
+            document.getElementById(tab + 'Form').style.display = 'block';
+            event.target.classList.add('active');
+            
+            // Clear errors
+            document.getElementById('authError').classList.add('hidden');
+            document.getElementById('authSuccess').classList.add('hidden');
+        }
+
+        window.signupUser = async function() {
+            const email = document.getElementById('signupEmail').value;
+            const password = document.getElementById('signupPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const signupBtn = document.getElementById('signupBtn');
+
+            if (!email || !password || !confirmPassword) {
+                showError('Please fill in all fields');
+                return;
+            }
+
+            if (password !== confirmPassword) {
+                showError('Passwords do not match');
+                return;
+            }
+
+            if (password.length < 6) {
+                showError('Password must be at least 6 characters');
+                return;
+            }
+
+            signupBtn.disabled = true;
+            signupBtn.textContent = 'Creating...';
+
+            try {
+                await createUserWithEmailAndPassword(auth, email, password);
+                showSuccess('Account created successfully! Please login.');
+                setTimeout(() => showAuthTab('login'), 2000);
+            } catch (error) {
+                showError(error.message);
+            } finally {
+                signupBtn.disabled = false;
+                signupBtn.textContent = 'Create Account';
+            }
+        }
+
+        window.loginUser = async function() {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            const loginBtn = document.getElementById('loginBtn');
+
+            if (!email || !password) {
+                showError('Please enter email and password');
+                return;
+            }
+
+            loginBtn.disabled = true;
+            loginBtn.textContent = 'Logging in...';
+
+            try {
+                await signInWithEmailAndPassword(auth, email, password);
+            } catch (error) {
+                showError(error.message);
+            } finally {
+                loginBtn.disabled = false;
+                loginBtn.textContent = 'Login';
+            }
+        }
+
+        window.logoutUser = async function() {
+            try {
+                // Clean up listeners
+                unsubscribers.forEach(unsubscribe => unsubscribe());
+                unsubscribers = [];
+                
+                await signOut(auth);
+            } catch (error) {
+                console.error('Logout error:', error);
+            }
+        }
+
+        // ========================================
+        // FIRESTORE DATA FUNCTIONS
+        // ========================================
+
+        async function loadUserData() {
+            if (!currentUser) return;
+
+            try {
+                document.getElementById('syncStatus').textContent = 'Loading...';
+
+                // Load all collections
+                const [lendingSnapshot, borrowingSnapshot, billsSnapshot, activitySnapshot] = await Promise.all([
+                    getDocs(collection(db, 'users', currentUser.uid, 'lending')),
+                    getDocs(collection(db, 'users', currentUser.uid, 'borrowing')),
+                    getDocs(collection(db, 'users', currentUser.uid, 'bills')),
+                    getDocs(query(collection(db, 'users', currentUser.uid, 'activity'), orderBy('date', 'desc')))
+                ]);
+
+                data.lending = lendingSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                data.borrowing = borrowingSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                data.bills = billsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                data.activity = activitySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+
+                updateAllTabs();
+                document.getElementById('syncStatus').textContent = 'Synced to cloud';
+            } catch (error) {
+                console.error('Error loading data:', error);
+                document.getElementById('syncStatus').textContent = 'Sync error';
+            }
+        }
+
+        function setupRealtimeListeners() {
+            if (!currentUser) return;
+
+            // Clean up existing listeners
+            unsubscribers.forEach(unsubscribe => unsubscribe());
+            unsubscribers = [];
+
+            // Lending listener
+            const lendingUnsubscribe = onSnapshot(collection(db, 'users', currentUser.uid, 'lending'), (snapshot) => {
+                data.lending = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                updateAllTabs();
+            });
+
+            // Borrowing listener
+            const borrowingUnsubscribe = onSnapshot(collection(db, 'users', currentUser.uid, 'borrowing'), (snapshot) => {
+                data.borrowing = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                updateAllTabs();
+            });
+
+            // Bills listener
+            const billsUnsubscribe = onSnapshot(collection(db, 'users', currentUser.uid, 'bills'), (snapshot) => {
+                data.bills = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                updateAllTabs();
+            });
+
+            // Activity listener
+            const activityUnsubscribe = onSnapshot(
+                query(collection(db, 'users', currentUser.uid, 'activity'), orderBy('date', 'desc')), 
+                (snapshot) => {
+                    data.activity = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+                    updateAllTabs();
+                }
+            );
+
+            unsubscribers.push(lendingUnsubscribe, borrowingUnsubscribe, billsUnsubscribe, activityUnsubscribe);
+        }
+
+        async function saveToFirestore(collectionName, data, docId = null) {
+            if (!currentUser) return;
+
+            try {
+                if (docId) {
+                    await updateDoc(doc(db, 'users', currentUser.uid, collectionName, docId), data);
+                } else {
+                    const docRef = await addDoc(collection(db, 'users', currentUser.uid, collectionName), data);
+                    return docRef.id;
+                }
+            } catch (error) {
+                console.error('Error saving to Firestore:', error);
+                throw error;
+            }
+        }
+
+        async function deleteFromFirestore(collectionName, docId) {
+            if (!currentUser) return;
+
+            try {
+                await deleteDoc(doc(db, 'users', currentUser.uid, collectionName, docId));
+            } catch (error) {
+                console.error('Error deleting from Firestore:', error);
+                throw error;
+            }
+        }
+
+        // ========================================
+        // UI FUNCTIONS (Same as original, adapted for Firebase)
+        // ========================================
+        
+        window.showTab = function(tabName) {
+            document.querySelectorAll('.tab-content').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+
+            if (tabName === 'dashboard') updateDashboard();
+            else if (tabName === 'lending') updateLendingList();
+            else if (tabName === 'bills') updateBillsList();
+        }
+
+        window.showAddModal = function() {
+            document.getElementById('addModal').style.display = 'block';
+            selectedPersonId = null;
+            updateForm();
+        }
+
+        window.closeModal = function() {
+            document.getElementById('addModal').style.display = 'none';
+        }
+
+        window.showPaymentModal = function(item, type) {
+            currentPaymentItem = item;
+            currentPaymentType = type;
+            document.getElementById('paymentTitle').textContent = 
+                type === 'lending' ? `Payment from ${item.name}` : 
+                type === 'borrowing' ? `Payment to ${item.name}` :
+                `Mark ${item.name} as Paid`;
+            
+            document.getElementById('paymentDate').value = new Date().toISOString().split('T')[0];
+            document.getElementById('paymentAmount').value = '';
+            document.getElementById('paymentNote').value = '';
+            
+            if (type === 'lending' || type === 'borrowing') {
+                document.getElementById('paymentInfo').innerHTML = `
+                    <strong>Current Balance:</strong> $${item.balance.toFixed(2)}<br>
+                    <strong>Person ID:</strong> ${item.personId}<br>
+                    <strong>Total Lent:</strong> $${item.totalLent.toFixed(2)}<br>
+                    <strong>Total Returned:</strong> $${item.totalReturned.toFixed(2)}
+                `;
+            }
+            
+            document.getElementById('paymentModal').style.display = 'block';
+        }
+
+        window.closePaymentModal = function() {
+            document.getElementById('paymentModal').style.display = 'none';
+            currentPaymentItem = null;
+            currentPaymentType = null;
+        }
+
+        window.showPersonModal = function(person, type) {
+            document.getElementById('personModalTitle').textContent = `${person.name} (ID: ${person.personId})`;
+            
+            const details = document.getElementById('personDetails');
+            details.innerHTML = `
+                <div style="margin-bottom: 15px;">
+                    <strong>Person ID:</strong> ${person.personId}<br>
+                    <strong>Current Balance:</strong> $${person.balance.toFixed(2)}<br>
+                    <strong>Total Lent:</strong> $${person.totalLent.toFixed(2)}<br>
+                    <strong>Total Returned:</strong> $${person.totalReturned.toFixed(2)}<br>
+                    ${person.expectedReturn ? `<strong>Expected Return:</strong> ${new Date(person.expectedReturn).toLocaleDateString()}<br>` : ''}
+                </div>
+                
+                <h4>Transaction History:</h4>
+                <div class="transaction-history">
+                    ${person.transactions.map(t => `
+                        <div class="transaction-item">
+                            <strong>${t.type === 'loan' ? '💰 Loan' : '💵 Payment'}:</strong> $${t.amount.toFixed(2)}<br>
+                            <small>${new Date(t.date).toLocaleDateString()} ${t.purpose ? '- ' + t.purpose : ''} ${t.note ? '- ' + t.note : ''}</small>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            
+            document.getElementById('personModal').style.display = 'block';
+        }
+
+        window.closePersonModal = function() {
+            document.getElementById('personModal').style.display = 'none';
+        }
+
+        window.updateForm = function() {
+            const type = document.getElementById('itemType').value;
+            const form = document.getElementById('dynamicForm');
+            
+            if (type === 'lending' || type === 'borrowing') {
+                const existingPeople = data[type];
+                
+                form.innerHTML = `
+                    <div class="form-group">
+                        <label>Select Person:</label>
+                        <div class="person-selector">
+                            <div class="person-option new selected" onclick="selectPersonOption('new')">
+                                <strong>➕ New Person</strong>
+                            </div>
+                            ${existingPeople.length > 0 ? `
+                                <div class="person-option existing" onclick="selectPersonOption('existing')">
+                                    <strong>👤 Existing Person</strong>
+                                </div>
+                            ` : ''}
+                        </div>
+                    </div>
+
+                    <div id="existingPersonSelect" class="form-group hidden">
+                        <label>Choose Existing Person:</label>
+                        <select id="existingPerson" onchange="onExistingPersonSelect()">
+                            <option value="">Select a person...</option>
+                            ${existingPeople.map(p => `
+                                <option value="${p.personId}">${p.name} (ID: ${p.personId}) - Balance: $${p.balance.toFixed(2)}</option>
+                            `).join('')}
+                        </select>
+                    </div>
+
+                    <div id="newPersonForm">
+                        <div class="form-group">
+                            <label>Person Name:</label>
+                            <input type="text" id="personName" placeholder="Enter name">
+                        </div>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Amount:</label>
+                            <input type="number" id="amount" placeholder="Enter amount" step="0.01">
+                        </div>
+                        <div class="form-group">
+                            <label>Expected Return Date:</label>
+                            <input type="date" id="expectedReturn">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label>Purpose (Optional):</label>
+                        <input type="text" id="purpose" placeholder="What for?">
+                    </div>
+                `;
+            } else {
+                form.innerHTML = `
+                    <div class="form-group">
+                        <label>Bill Name:</label>
+                        <input type="text" id="billName" placeholder="e.g., Credit Card, Netflix">
+                    </div>
+                    <div class="form-group">
+                        <label>Amount:</label>
+                        <input type="number" id="billAmount" placeholder="Enter amount" step="0.01">
+                    </div>
+                    <div class="form-group">
+                        <label>Due Date:</label>
+                        <input type="date" id="dueDate">
+                    </div>
+                    <div class="form-group">
+                        <label>Category:</label>
+                        <select id="category">
+                            <option value="credit-card">💳 Credit Card</option>
+                            <option value="subscription">📺 Subscription</option>
+                            <option value="utility">⚡ Utility</option>
+                            <option value="loan">🏦 Loan</option>
+                            <option value="insurance">🛡️ Insurance</option>
+                            <option value="other">📋 Other</option>
+                        </select>
+                    </div>
+                `;
+            }
+        }
+
+        window.selectPersonOption = function(option) {
+            document.querySelectorAll('.person-option').forEach(el => el.classList.remove('selected'));
+            
+            if (option === 'new') {
+                document.querySelector('.person-option.new').classList.add('selected');
+                document.getElementById('existingPersonSelect').classList.add('hidden');
+                document.getElementById('newPersonForm').classList.remove('hidden');
+                selectedPersonId = null;
+            } else {
+                document.querySelector('.person-option.existing').classList.add('selected');
+                document.getElementById('existingPersonSelect').classList.remove('hidden');
+                document.getElementById('newPersonForm').classList.add('hidden');
+            }
+        }
+
+        window.onExistingPersonSelect = function() {
+            selectedPersonId = parseInt(document.getElementById('existingPerson').value) || null;
+        }
+
+        function generatePersonId() {
+            return Date.now() + Math.floor(Math.random() * 1000);
+        }
+
+        window.addItem = async function() {
+            const type = document.getElementById('itemType').value;
+            const addBtn = document.getElementById('addItemBtn');
+            
+            addBtn.disabled = true;
+            addBtn.textContent = 'Adding...';
+
+            try {
+                if (type === 'lending' || type === 'borrowing') {
+                    let name, personId;
+                    const amount = parseFloat(document.getElementById('amount').value);
+                    const purpose = document.getElementById('purpose').value;
+                    const expectedReturn = document.getElementById('expectedReturn').value;
+                    
+                    if (!amount || amount <= 0) {
+                        alert('Please enter a valid amount');
+                        return;
+                    }
+
+                    if (selectedPersonId) {
+                        const existingPerson = data[type].find(p => p.personId === selectedPersonId);
+                        if (!existingPerson) {
+                            alert('Selected person not found');
+                            return;
+                        }
+                        name = existingPerson.name;
+                        personId = selectedPersonId;
+                    } else {
+                        name = document.getElementById('personName').value;
+                        if (!name) {
+                            alert('Please enter person name');
+                            return;
+                        }
+                        personId = generatePersonId();
+                    }
+
+                    const existingPersonDoc = data[type].find(item => item.personId === personId);
+                    
+                    if (existingPersonDoc) {
+                        // Update existing person
+                        const updatedData = {
+                            balance: existingPersonDoc.balance + amount,
+                            totalLent: existingPersonDoc.totalLent + amount,
+                            expectedReturn: expectedReturn || existingPersonDoc.expectedReturn,
+                            transactions: [
+                                ...existingPersonDoc.transactions,
+                                {
+                                    date: new Date().toISOString(),
+                                    type: 'loan',
+                                    amount: amount,
+                                    purpose: purpose
+                                }
+                            ]
+                        };
+                        await saveToFirestore(type, updatedData, existingPersonDoc.id);
+                    } else {
+                        // Create new person
+                        const newPersonData = {
+                            personId: personId,
+                            name: name,
+                            balance: amount,
+                            totalLent: amount,
+                            totalReturned: 0,
+                            expectedReturn: expectedReturn || null,
+                            transactions: [{
+                                date: new Date().toISOString(),
+                                type: 'loan',
+                                amount: amount,
+                                purpose: purpose
+                            }]
+                        };
+                        await saveToFirestore(type, newPersonData);
+                    }
+
+                    // Add activity
+                    await saveToFirestore('activity', {
+                        date: new Date().toISOString(),
+                        type: type,
+                        description: `${type === 'lending' ? 'Lent' : 'Borrowed'} $${amount} ${type === 'lending' ? 'to' : 'from'} ${name} (ID: ${personId})`,
+                        amount: amount
+                    });
+
+                } else {
+                    // Bills
+                    const name = document.getElementById('billName').value;
+                    const amount = parseFloat(document.getElementById('billAmount').value);
+                    const dueDate = document.getElementById('dueDate').value;
+                    const category = document.getElementById('category').value;
+                    
+                    if (!name || !amount || !dueDate) {
+                        alert('Please fill in all required fields');
+                        return;
+                    }
+
+                    await saveToFirestore('bills', {
+                        name: name,
+                        amount: amount,
+                        dueDate: dueDate,
+                        category: category,
+                        paid: false,
+                        lastPaid: null
+                    });
+
+                    await saveToFirestore('activity', {
+                        date: new Date().toISOString(),
+                        type: 'bill',
+                        description: `Added bill: ${name} - $${amount}`,
+                        amount: amount
+                    });
+                }
+
+                closeModal();
+                document.getElementById('syncStatus').textContent = 'Synced to cloud';
+            } catch (error) {
+                console.error('Error adding item:', error);
+                alert('Error adding item. Please try again.');
+                document.getElementById('syncStatus').textContent = 'Sync error';
+            } finally {
+                addBtn.disabled = false;
+                addBtn.textContent = 'Add Item';
+            }
+        }
+
+        window.recordPayment = async function() {
+            const amount = parseFloat(document.getElementById('paymentAmount').value);
+            const paymentDate = document.getElementById('paymentDate').value;
+            const note = document.getElementById('paymentNote').value;
+            const recordBtn = document.getElementById('recordPaymentBtn');
+            
+            if (!amount || amount <= 0) {
+                alert('Please enter a valid payment amount');
+                return;
+            }
+
+            if (!paymentDate) {
+                alert('Please select payment date');
+                return;
+            }
+
+            recordBtn.disabled = true;
+            recordBtn.textContent = 'Recording...';
+
+            try {
+                if (currentPaymentType === 'lending' || currentPaymentType === 'borrowing') {
+                    if (amount > currentPaymentItem.balance) {
+                        alert(`Payment amount ($${amount}) cannot be more than balance ($${currentPaymentItem.balance.toFixed(2)})`);
+                        return;
+                    }
+
+                    const newBalance = currentPaymentItem.balance - amount;
+                    const newTotalReturned = currentPaymentItem.totalReturned + amount;
+                    const newTransactions = [
+                        ...currentPaymentItem.transactions,
+                        {
+                            date: paymentDate,
+                            type: 'payment',
+                            amount: amount,
+                            note: note
+                        }
+                    ];
+
+                    if (newBalance <= 0) {
+                        // Delete the person if fully paid
+                        await deleteFromFirestore(currentPaymentType, currentPaymentItem.id);
+                    } else {
+                        // Update the person
+                        await saveToFirestore(currentPaymentType, {
+                            balance: newBalance,
+                            totalReturned: newTotalReturned,
+                            transactions: newTransactions
+                        }, currentPaymentItem.id);
+                    }
+
+                    await saveToFirestore('activity', {
+                        date: new Date().toISOString(),
+                        type: currentPaymentType,
+                        description: `${currentPaymentType === 'lending' ? 'Received' : 'Made'} $${amount} payment ${currentPaymentType === 'lending' ? 'from' : 'to'} ${currentPaymentItem.name} (ID: ${currentPaymentItem.personId})`,
+                        amount: amount
+                    });
+
+                } else if (currentPaymentType === 'bills') {
+                    await saveToFirestore('bills', {
+                        paid: true,
+                        lastPaid: paymentDate
+                    }, currentPaymentItem.id);
+
+                    await saveToFirestore('activity', {
+                        date: new Date().toISOString(),
+                        type: 'bill',
+                        description: `Paid ${currentPaymentItem.name} - $${currentPaymentItem.amount}`,
+                        amount: currentPaymentItem.amount
+                    });
+                }
+
+                closePaymentModal();
+                document.getElementById('syncStatus').textContent = 'Synced to cloud';
+            } catch (error) {
+                console.error('Error recording payment:', error);
+                alert('Error recording payment. Please try again.');
+                document.getElementById('syncStatus').textContent = 'Sync error';
+            } finally {
+                recordBtn.disabled = false;
+                recordBtn.textContent = 'Record Payment';
+            }
+        }
+
+        function updateDashboard() {
+            const totalOwed = data.lending.reduce((sum, item) => sum + item.balance, 0);
+            const totalYouOwe = data.borrowing.reduce((sum, item) => sum + item.balance, 0);
+            const totalBills = data.bills.filter(bill => !bill.paid).reduce((sum, bill) => sum + bill.amount, 0);
+            
+            const today = new Date();
+            const overdueCount = data.lending.filter(item => 
+                item.expectedReturn && new Date(item.expectedReturn) < today
+            ).length;
+
+            document.getElementById('totalOwed').textContent = `$${totalOwed.toFixed(0)}`;
+            document.getElementById('totalYouOwe').textContent = `$${totalYouOwe.toFixed(0)}`;
+            document.getElementById('totalBills').textContent = `$${totalBills.toFixed(0)}`;
+            document.getElementById('overdueCount').textContent = overdueCount;
+
+            const todayStr = today.toISOString().split('T')[0];
+            const upcomingBills = data.bills.filter(bill => !bill.paid && bill.dueDate <= todayStr);
+            const overdueReturns = data.lending.filter(item => 
+                item.expectedReturn && item.expectedReturn <= todayStr
+            );
+            
+            const remindersContainer = document.getElementById('todayReminders');
+            const allReminders = [
+                ...upcomingBills.map(bill => ({
+                    type: 'bill',
+                    text: `${bill.name} - $${bill.amount}`,
+                    subtext: `Due: ${new Date(bill.dueDate).toLocaleDateString()}`
+                })),
+                ...overdueReturns.map(person => ({
+                    type: 'overdue',
+                    text: `${person.name} (ID: ${person.personId}) - $${person.balance.toFixed(2)}`,
+                    subtext: `Expected: ${new Date(person.expectedReturn).toLocaleDateString()}`
+                }))
+            ];
+
+            if (allReminders.length === 0) {
+                remindersContainer.innerHTML = '<p>No reminders for today! 🎉</p>';
+            } else {
+                remindersContainer.innerHTML = allReminders.map(reminder => `
+                    <div style="margin: 10px 0; padding: 10px; background: rgba(255,255,255,0.2); border-radius: 8px;">
+                        <strong>${reminder.text}</strong>
+                        <br><small>${reminder.subtext}</small>
+                    </div>
+                `).join('');
+            }
+
+            const activityContainer = document.getElementById('recentActivity');
+            if (data.activity.length === 0) {
+                activityContainer.innerHTML = '<div class="no-data"><p>No recent activity</p></div>';
+            } else {
+                activityContainer.innerHTML = data.activity.slice(0, 5).map(activity => `
+                    <div class="reminder-item">
+                        <div class="item-header">
+                            <span class="item-name">${activity.description}</span>
+                            <span class="item-amount">$${activity.amount}</span>
+                        </div>
+                        <div class="item-details">${new Date(activity.date).toLocaleDateString()}</div>
+                    </div>
+                `).join('');
+            }
+        }
+
+        function updateLendingList() {
+            const lendingContainer = document.getElementById('lendingList');
+            const borrowingContainer = document.getElementById('borrowingList');
+            const today = new Date();
+
+            if (data.lending.length === 0) {
+                lendingContainer.innerHTML = '<div class="no-data"><p>No one owes you money</p></div>';
+            } else {
+                lendingContainer.innerHTML = data.lending.map(person => {
+                    const isOverdue = person.expectedReturn && new Date(person.expectedReturn) < today;
+                    return `
+                        <div class="person-item ${isOverdue ? 'overdue' : ''}">
+                            <div class="item-header">
+                                <div>
+                                    <span class="person-id">ID: ${person.personId}</span>
+                                    <span class="item-name">${person.name}</span>
+                                </div>
+                                <span class="item-amount">$${person.balance.toFixed(2)}</span>
+                            </div>
+                            <div class="item-details">
+                                Total Lent: $${person.totalLent.toFixed(2)} | Returned: $${person.totalReturned.toFixed(2)}<br>
+                                ${person.expectedReturn ? 
+                                    `Expected Return: ${new Date(person.expectedReturn).toLocaleDateString()} ${isOverdue ? '⚠️ OVERDUE' : ''}` : 
+                                    'No return date set'
+                                }
+                            </div>
+                            <div class="action-buttons">
+                                <button class="btn btn-small" onclick="showPaymentModal(${JSON.stringify(person).replace(/"/g, '&quot;')}, 'lending')">💰 Payment</button>
+                                <button class="btn btn-small btn-secondary" onclick="showPersonModal(${JSON.stringify(person).replace(/"/g, '&quot;')}, 'lending')">📋 Details</button>
+                                <button class="btn btn-small btn-warning" onclick="deletePerson('${person.id}', 'lending')">🗑️ Delete</button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            if (data.borrowing.length === 0) {
+                borrowingContainer.innerHTML = '<div class="no-data"><p>You don\'t owe anyone money</p></div>';
+            } else {
+                borrowingContainer.innerHTML = data.borrowing.map(person => {
+                    const isOverdue = person.expectedReturn && new Date(person.expectedReturn) < today;
+                    return `
+                        <div class="person-item ${isOverdue ? 'overdue' : ''}">
+                            <div class="item-header">
+                                <div>
+                                    <span class="person-id">ID: ${person.personId}</span>
+                                    <span class="item-name">${person.name}</span>
+                                </div>
+                                <span class="item-amount">$${person.balance.toFixed(2)}</span>
+                            </div>
+                            <div class="item-details">
+                                Total Borrowed: $${person.totalLent.toFixed(2)} | Paid Back: $${person.totalReturned.toFixed(2)}<br>
+                                ${person.expectedReturn ? 
+                                    `Expected Payment: ${new Date(person.expectedReturn).toLocaleDateString()} ${isOverdue ? '⚠️ OVERDUE' : ''}` : 
+                                    'No payment date set'
+                                }
+                            </div>
+                            <div class="action-buttons">
+                                <button class="btn btn-small" onclick="showPaymentModal(${JSON.stringify(person).replace(/"/g, '&quot;')}, 'borrowing')">💳 Pay Back</button>
+                                <button class="btn btn-small btn-secondary" onclick="showPersonModal(${JSON.stringify(person).replace(/"/g, '&quot;')}, 'borrowing')">📋 Details</button>
+                                <button class="btn btn-small btn-warning" onclick="deletePerson('${person.id}', 'borrowing')">🗑️ Delete</button>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+        }
+
+        function updateBillsList() {
+            const billsContainer = document.getElementById('billsList');
+            
+            if (data.bills.length === 0) {
+                billsContainer.innerHTML = '<div class="no-data"><p>No bills added yet</p></div>';
+                return;
+            }
+
+            const today = new Date();
+            const sortedBills = data.bills.filter(bill => !bill.paid).sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate));
+
+            billsContainer.innerHTML = sortedBills.map(bill => {
+                const dueDate = new Date(bill.dueDate);
+                const daysDiff = Math.ceil((dueDate - today) / (1000 * 60 * 60 * 24));
+                
+                let statusClass = '';
+                let statusText = '';
+                
+                if (daysDiff < 0) {
+                    statusClass = 'overdue';
+                    statusText = `${Math.abs(daysDiff)} days overdue`;
+                } else if (daysDiff <= 3) {
+                    statusClass = 'due-soon';
+                    statusText = daysDiff === 0 ? 'Due today' : `Due in ${daysDiff} days`;
+                } else {
+                    statusText = `Due in ${daysDiff} days`;
+                }
+
+                return `
+                    <div class="reminder-item ${statusClass}">
+                        <div class="item-header">
+                            <span class="item-name">${bill.name}</span>
+                            <span class="item-amount">$${bill.amount}</span>
+                        </div>
+                        <div class="item-details">
+                            ${statusText} • ${dueDate.toLocaleDateString()}
+                        </div>
+                        <div class="action-buttons">
+                            <button class="btn btn-small" onclick="showPaymentModal(${JSON.stringify(bill).replace(/"/g, '&quot;')}, 'bills')">✅ Mark Paid</button>
+                            <button class="btn btn-small btn-danger" onclick="deleteBill('${bill.id}')">🗑️ Delete</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function updateAllTabs() {
+            updateDashboard();
+            updateLendingList();
+            updateBillsList();
+        }
+
+        // Delete functions
+        window.deletePerson = async function(id, type) {
+            if (confirm('Are you sure you want to delete this person and all their transaction history?')) {
+                try {
+                    await deleteFromFirestore(type, id);
+                    document.getElementById('syncStatus').textContent = 'Synced to cloud';
+                } catch (error) {
+                    console.error('Error deleting person:', error);
+                    alert('Error deleting person. Please try again.');
+                    document.getElementById('syncStatus').textContent = 'Sync error';
+                }
+            }
+        }
+
+        window.deleteBill = async function(id) {
+            if (confirm('Are you sure you want to delete this bill?')) {
+                try {
+                    await deleteFromFirestore('bills', id);
+                    document.getElementById('syncStatus').textContent = 'Synced to cloud';
+                } catch (error) {
+                    console.error('Error deleting bill:', error);
+                    alert('Error deleting bill. Please try again.');
+                    document.getElementById('syncStatus').textContent = 'Sync error';
+                }
+            }
+        }
+
+        // ========================================
+        // AUTH STATE MANAGEMENT
+        // ========================================
+        
+        onAuthStateChanged(auth, (user) => {
+            currentUser = user;
+            window.currentUser = user;
+
+            if (user) {
+                // User is signed in
+                document.getElementById('loadingScreen').classList.add('hidden');
+                document.getElementById('authContainer').classList.add('hidden');
+                document.getElementById('mainApp').classList.remove('hidden');
+                
+                document.getElementById('userInfo').textContent = `Logged in as: ${user.email}`;
+                
+                // Load user data and setup real-time listeners
+                loadUserData();
+                setupRealtimeListeners();
+            } else {
+                // User is signed out
+                document.getElementById('loadingScreen').classList.add('hidden');
+                document.getElementById('authContainer').classList.remove('hidden');
+                document.getElementById('mainApp').classList.add('hidden');
+                
+                // Clear data
+                data = { lending: [], borrowing: [], bills: [], activity: [] };
+            }
+        });
+
+        // Close modals when clicking outside
+        window.onclick = function(event) {
+            const addModal = document.getElementById('addModal');
+            const paymentModal = document.getElementById('paymentModal');
+            const personModal = document.getElementById('personModal');
+            
+            if (event.target === addModal) {
+                closeModal();
+            }
+            if (event.target === paymentModal) {
+                closePaymentModal();
+            }
+            if (event.target === personModal) {
+                closePersonModal();
+            }
+        }
+
+        console.log('Firebase Financial Tracker initialized');
+    </script>
+</body>
+</html>
